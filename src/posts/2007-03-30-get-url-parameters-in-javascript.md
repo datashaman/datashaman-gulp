@@ -3,8 +3,7 @@ title: Get URL Parameters in Javascript
 date: 2007-03-30 12:00:00
 redirects:
     - /blog/2007/03/30/get-url-parameters-in-javascript/
-template: post.html
-collection: posts
+template: post.njk
 comments:
     - name: John Hill
       link: http://www.theglasspeople.net/

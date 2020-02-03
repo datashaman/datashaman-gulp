@@ -1,8 +1,7 @@
 ---
 title: Cumulative Filter Object
 date: 2014-01-26 12:00:00
-collection: posts
-template: post.html
+template: post.njk
 ---
 I've created a cumulative object in coffeescript, useful for creating filters.
 
