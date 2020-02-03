@@ -1,27 +1,27 @@
 const { src, dest, task, series, parallel, watch } = require('gulp')
 const browserSync = require('browser-sync').create()
+const compiler = require('webpack')
 const del = require('del')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const named = require('gulp-named')
 const nunjucks = require('nunjucks')
 const plugins = require('gulp-load-plugins')()
-const compiler = require('webpack')
 const webpack = require('webpack-stream')
 
 const paths = {
     posts: [
         './src/posts/*.md',
     ],
-    scripts: './src/scripts/app.js',
+    scripts: './src/scripts/main.js',
     styles: [
         './src/styles/*.scss',
     ],
 }
 
+const nunjucksEnv = nunjucks.configure('./views')
+nunjucksEnv.addFilter('date', require('nunjucks-date'))
+
 function posts() {
-    const env = nunjucks.configure('./views')
-
-    env.addFilter('date', require('nunjucks-date'))
-
     return src(paths.posts)
         .pipe(plugins.rename(path => {
             const { groups: { year, month, day, slug }} =
@@ -41,7 +41,7 @@ function posts() {
         .pipe(plugins.ssg())
         .pipe(plugins.wrap(
             { src: './views/post.njk' },
-            { site: { link: 'https://datashaman.com', title: 'datashaman' }, nunjucksEnv: env },
+            { site: { link: 'https://datashaman.com', title: 'datashaman' }, nunjucksEnv },
             { engine: 'nunjucks' }
         ))
         .pipe(dest('./build'))
@@ -50,7 +50,10 @@ function posts() {
 function scripts() {
     return src(paths.scripts)
         .pipe(webpack({
-            mode: process.env.NODE_ENV || 'development'
+            mode: process.env.NODE_ENV || 'development',
+            output: {
+                filename: 'main.js',
+            },
         }, compiler))
         .pipe(dest('./build/scripts'))
 }
@@ -69,8 +72,8 @@ function clean() {
 }
 
 task('watch', () => {
-    watch(paths.posts, posts)
     watch(paths.scripts, scripts)
+    watch(paths.posts, posts)
     watch(paths.styles, styles)
 })
 
@@ -82,12 +85,12 @@ task('browserSync', () => {
     })
 })
 
-const build = series(clean, parallel(posts, scripts, styles))
+const build = series(clean, parallel(series(scripts, posts), styles))
 
 exports.clean = clean
 exports.posts = posts
 exports.scripts = scripts
 exports.styles = styles
-exports.watch = series('browserSync', scripts, styles, 'watch')
+exports.watch = series('browserSync', scripts, posts, styles, 'watch')
 exports.build = build
 exports.default  = build
