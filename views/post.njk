@@ -1,0 +1,36 @@
+{% extends './default.njk' %}
+
+{% block content %}
+<article class="pure-g">
+    <div class="pure-u-1-4">
+        <a href="{{ site.link }}">
+            <time>{{ file.data.date|date('YYYY-MM-DD HH:mm') }}</time>
+        </a>
+    </div>
+
+    <div class="pure-u-3-4">
+        <h3><a href="{{ file.data.url }}">{{ file.data.title }}</a></h3>
+
+        {{ contents|safe }}
+    </div>
+
+    {% if file.data.comments %}
+    <div class="comments pure-g">
+        {% for comment in file.data.comments %}
+        <div class="comment">
+            <div class="pure-u-1-4">
+                <time>{{ comment.date|date('YYYY-MM-DD HH:mm') }}</time>
+            </div>
+            <div class="pure-u-3-4">
+                <div>
+                    <a href="{{ comment.link }}" rel="noopener noreferer" target="_blank">{{ comment.name }}</a>
+                </div>
+
+                {{ comment.text }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</article>
+{% endblock %}

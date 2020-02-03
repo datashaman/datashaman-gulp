@@ -1,0 +1,58 @@
+@import "../../node_modules/water.css/dist/light.standalone";
+@import "../../node_modules/purecss/build/grids";
+
+main {
+  max-width: 110ch;
+  padding: 2ch;
+  margin: auto;
+}
+
+.template--home h3,
+.template--post h3,
+.template--page h3
+{
+  margin-top: 0;
+}
+
+.template--home article
+{
+    margin-bottom: 10px;
+}
+
+.template--home article time,
+.template--post article time,
+.template--page article time
+{
+    position: relative;
+    top: 3px;
+    text-align: right;
+}
+
+.tags {
+    margin-top: 10px;
+    text-align: right;
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        display: inline-block;
+        margin-right: 10px;
+    }
+}
+
+.comments {
+    padding-top: 10px;
+    border-top: 1px solid;
+
+    .comment {
+        margin-bottom: 10px;
+    }
+}
+
+.pagination {
+    text-align: center;
+}

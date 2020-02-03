@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% if title %}{{ title }} - {% endif %}{{ site.title }}
+    </title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body class="template--{{ template }}">
+    <main>
+        <div class="pure-g">
+            <div class="pure-u-1-4">
+            </div>
+            <div class="pure-u-3-4">
+                <ul>
+                    <li><a href="/tags/">Tags</a></li>
+                </ul>
+                <h1>
+                    <a href="{{ site.link }}">{{ site.title }}</a>
+                </h1>
+            </div>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

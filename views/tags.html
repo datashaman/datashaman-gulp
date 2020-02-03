@@ -1,0 +1,17 @@
+{% extends 'default.html' %}
+
+{% block content %}
+{% for tag, posts in collections %}
+<div class="pure-g">
+    <div class="pure-u-1-4">
+        <a href="/tags/{{ tag }}/">#{{ tag }}</a>
+    </div>
+    <div class="pure-u-3-4">
+        {% for post in posts|slice(0, limit - 1) %}
+        <div><a href="{{ post.path }}">{{ post.title }}</a></div>
+        {% endfor %}
+        {% if posts|length > limit %}<a href="/tags/{{ tag }}/">more</a>{% endif %}
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
