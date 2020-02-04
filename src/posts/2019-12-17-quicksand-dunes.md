@@ -1,7 +1,7 @@
 ---
 title: Quicksand Dunes
 date: 2019-12-17 14:51:00
-template: post.njk
+view: post.njk
 tags:
     - improv
     - writing

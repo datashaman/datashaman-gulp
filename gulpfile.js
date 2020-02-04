@@ -12,7 +12,7 @@ const webpack = require('webpack-stream')
 
 const paths = {
     posts: [
-        './src/posts/*.md',
+        './src/**/*.md',
     ],
     scripts: './src/scripts/main.js',
     styles: [
@@ -53,8 +53,9 @@ function aggregateData() {
                 this.push(new Vinyl({
                     data: {
                         posts: tags[tag],
-                        template: 'tag.njk',
+                        tag,
                         title: tag,
+                        view: 'tag.njk',
                     },
                     path: 'tags/' + tag + '/index.md',
                     contents: Buffer.from(contents)
@@ -91,7 +92,7 @@ function posts() {
         .pipe(plugins.markdown())
         .pipe(plugins.ssg())
         .pipe(plugins.wrap(
-            (data) => fs.readFileSync('./views/' + data.template).toString(),
+            (data) => fs.readFileSync('./views/' + data.view).toString(),
             { site: { link: 'https://datashaman.com', title: 'datashaman' }, nunjucksEnv },
             { engine: 'nunjucks' }
         ))

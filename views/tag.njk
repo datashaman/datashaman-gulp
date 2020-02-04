@@ -1,1 +1,6 @@
-Hey
+{% extends 'default.njk' %}
+{% from 'macros.njk' import render_posts %} 
+
+{% block content %}
+    {{ render_posts(posts) }}
+{% endblock %}

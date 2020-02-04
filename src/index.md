@@ -1,5 +1,3 @@
 ---
-pagination:
-    collection: posts
-template: page.html
+view: home.njk
 ---

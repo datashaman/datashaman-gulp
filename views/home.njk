@@ -1,7 +1,7 @@
-{% extends 'default.html' %}
+{% extends 'default.njk' %}
 
 {% block content %}
-    {% for post in pagination.data %}
+    {% for post in collections.posts %}
     <article class="pure-g">
         <div class="pure-u-1-4">
             <a href="{{ site.link }}">
@@ -29,16 +29,4 @@
         </div>
     </article>
     {% endfor %}
-
-    <div class="pure-g">
-        <div class="pure-u-1-4">
-        </div>
-
-        <div class="pagination pure-u-3-4">
-            {% if pagination.lastPage > 1 %}
-                {% if pagination.prevPageUrl %}<a href="{{ pagination.prevPageUrl }}">Previous</a>{% endif %}
-                {% if pagination.nextPageUrl %}<a href="{{ pagination.nextPageUrl }}">Next</a>{% endif %}
-            {% endif %}
-        </div>
-    </div>
 {% endblock %}
