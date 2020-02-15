@@ -2,5 +2,5 @@
 {% from 'macros.njk' import render_posts %} 
 
 {% block content %}
-    {{ render_posts(tags[tag]) }}
+    {{ render_posts(tags[tag], index) }}
 {% endblock %}

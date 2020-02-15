@@ -1,7 +1,5 @@
 {% macro render_posts(posts) %}
-{% for defn in posts %}
-{% set post = index[defn.id] %}
-{{ post | dump }}
+{% for post in posts %}
 <article class="pure-g">
     <div class="pure-u-1-4">
         <a href="{{ site.link }}">
@@ -10,12 +8,12 @@
     </div>
     <div class="pure-u-3-4">
         <h3>
-            <a href="{{ post.path }}">{{ post.title }}</a>
+            <a href="{{ post.data.url }}">{{ post.data.title }}</a>
         </h3>
 
         {{ post.data.excerpt|default(post.contents)|safe }}
 
-        {% if post.data.excerpt %}<a href="{{ post.path }}">more</a>{% endif %}
+        {% if post.data.excerpt %}<a href="{{ post.data.url }}">more</a>{% endif %}
 
         {% if post.data.tags %}
         <div class="tags">

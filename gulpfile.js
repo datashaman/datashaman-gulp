@@ -26,7 +26,6 @@ function more() {
     return through.obj(
         (file, encoding, cb) => {
             const contents = file.contents.toString()
-
             const parts = contents.split(/\s*\<!--more--\>/)
             
             if(parts.length > 1) {
@@ -34,38 +33,26 @@ function more() {
             }
 
             cb(null, file)
-        },
-        function (cb) {
-            cb()
-        },
+        }
     )
 }
 
 let counter = 0
 
-function generateId() {
-    nunjucks.index = {}
-
+function index() {
     return through.obj(
         (file, encoding, cb) => {
             file.data.id = uniqid()
-            nunjucks.index[file.data.id] = file
-
             cb(null, file)
-        },
-        function (cb) {
-            cb()
         }
     )
 }
 
-function generateTags() {
+function tags() {
     nunjucks.tags = {}
 
     return through.obj(
         (file, encoding, cb) => {
-            log(file.data)
-
             let fileTags = file.data.tags || []
 
             if(file.data.tag) {
@@ -86,8 +73,6 @@ function generateTags() {
             cb(null, file)
         },
         function (cb) {
-            log(nunjucks.tags)
-
             Object.keys(nunjucks.tags).forEach(tag => {
                 nunjucks.tags[tag].sort((a, b) => a.date - b.date)
 
@@ -109,6 +94,24 @@ function generateTags() {
     )
 }
 
+function hydrateTags() {
+    return through.obj(
+        (file, encoding, cb) => {
+            Object.keys(nunjucks.tags).forEach(tag => {
+                nunjucks.tags[tag] = nunjucks.tags[tag].map(defn => {
+                    if (defn.id == file.data.id) {
+                        return file
+                    }
+
+                    return defn
+                })
+            })
+
+            cb(null, file)
+        }
+    )
+}
+
 function data() {
     return src(paths.posts)
         .pipe(plugins.frontMatter({
@@ -116,8 +119,7 @@ function data() {
             remove: true,
         }))
         .pipe(more())
-        .pipe(generateId())
-        .pipe(generateTags())
+        .pipe(index())
 }
 
 function posts() {
@@ -133,8 +135,10 @@ function posts() {
                 path.extname = '.md'
             }
         }))
+        .pipe(tags())
         .pipe(plugins.markdown())
         .pipe(plugins.ssg())
+        .pipe(hydrateTags())
         .pipe(plugins.wrap(
             (data) => fs.readFileSync('./views/' + data.view + '.njk').toString(),
             nunjucks, 
