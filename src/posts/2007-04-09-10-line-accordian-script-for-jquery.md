@@ -1,5 +1,5 @@
 ---
-view: post.njk
+view: post
 title: 10 line accordian script for jQuery (or less)
 redirects:
     - /blog/2007/04/09/10-line-accordian-script-for-jquery/

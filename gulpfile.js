@@ -4,11 +4,13 @@ const compiler = require('webpack')
 const del = require('del')
 const fs = require('fs')
 const log = require('fancy-log')
-const nunjucks = require('nunjucks')
 const plugins = require('gulp-load-plugins')()
 const through = require('through2')
+const uniqid = require('uniqid')
 const Vinyl = require('vinyl')
 const webpack = require('webpack-stream')
+
+const nunjucks = require('./nunjucks')
 
 const paths = {
     posts: [
@@ -20,14 +22,50 @@ const paths = {
     ],
 }
 
-const nunjucksEnv = nunjucks.configure('./views')
-nunjucksEnv.addFilter('date', require('nunjucks-date'))
-
-let tags = {}
-
-function aggregateData() {
+function more() {
     return through.obj(
         (file, encoding, cb) => {
+            const contents = file.contents.toString()
+
+            const parts = contents.split(/\s*\<!--more--\>/)
+            
+            if(parts.length > 1) {
+                file.data.excerpt = parts[0]
+            }
+
+            cb(null, file)
+        },
+        function (cb) {
+            cb()
+        },
+    )
+}
+
+let counter = 0
+
+function generateId() {
+    nunjucks.index = {}
+
+    return through.obj(
+        (file, encoding, cb) => {
+            file.data.id = uniqid()
+            nunjucks.index[file.data.id] = file
+
+            cb(null, file)
+        },
+        function (cb) {
+            cb()
+        }
+    )
+}
+
+function generateTags() {
+    nunjucks.tags = {}
+
+    return through.obj(
+        (file, encoding, cb) => {
+            log(file.data)
+
             let fileTags = file.data.tags || []
 
             if(file.data.tag) {
@@ -35,27 +73,31 @@ function aggregateData() {
             }
 
             fileTags.forEach(tag => {
-                if (typeof tags[tag] === 'undefined') {
-                    tags[tag] = []
+                if (typeof nunjucks.tags[tag] === 'undefined') {
+                    nunjucks.tags[tag] = []
                 }
 
-                tags[tag].push(file)
+                nunjucks.tags[tag].push({
+                    id: file.data.id,
+                    date: file.data.date,
+                })
             })
 
             cb(null, file)
         },
         function (cb) {
-            Object.keys(tags).forEach(tag => {
-                tags[tag].sort((a, b) => a.data.date - b.data.date)
+            log(nunjucks.tags)
+
+            Object.keys(nunjucks.tags).forEach(tag => {
+                nunjucks.tags[tag].sort((a, b) => a.date - b.date)
 
                 contents = ''
 
                 this.push(new Vinyl({
                     data: {
-                        posts: tags[tag],
                         tag,
                         title: tag,
-                        view: 'tag.njk',
+                        view: 'tag',
                     },
                     path: 'tags/' + tag + '/index.md',
                     contents: Buffer.from(contents)
@@ -67,13 +109,19 @@ function aggregateData() {
     )
 }
 
-function posts() {
+function data() {
     return src(paths.posts)
         .pipe(plugins.frontMatter({
             property: 'data',
             remove: true,
         }))
-        .pipe(aggregateData())
+        .pipe(more())
+        .pipe(generateId())
+        .pipe(generateTags())
+}
+
+function posts() {
+    return data()
         .pipe(plugins.rename(path => {
             const result = path.basename.match(/^(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})-(?<slug>.*)$/)
 
@@ -85,15 +133,11 @@ function posts() {
                 path.extname = '.md'
             }
         }))
-        .pipe(plugins.tap((file, t) => {
-            log(file.path)
-            log(tags)
-        }))
         .pipe(plugins.markdown())
         .pipe(plugins.ssg())
         .pipe(plugins.wrap(
-            (data) => fs.readFileSync('./views/' + data.view).toString(),
-            { site: { link: 'https://datashaman.com', title: 'datashaman' }, nunjucksEnv },
+            (data) => fs.readFileSync('./views/' + data.view + '.njk').toString(),
+            nunjucks, 
             { engine: 'nunjucks' }
         ))
         .pipe(dest('./build'))
@@ -142,6 +186,7 @@ task('browserSync', () => {
 const build = series(clean, parallel(series(scripts, posts), styles))
 
 exports.clean = clean
+exports.data = data
 exports.posts = posts
 exports.scripts = scripts
 exports.styles = styles

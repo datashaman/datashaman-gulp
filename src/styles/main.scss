@@ -7,21 +7,21 @@ main {
   margin: auto;
 }
 
-.template--home h3,
-.template--post h3,
-.template--page h3
+.view--home h3,
+.view--post h3,
+.view--page h3
 {
   margin-top: 0;
 }
 
-.template--home article
+.view--home article
 {
     margin-bottom: 10px;
 }
 
-.template--home article time,
-.template--post article time,
-.template--page article time
+.view--home article time,
+.view--post article time,
+.view--page article time
 {
     position: relative;
     top: 3px;

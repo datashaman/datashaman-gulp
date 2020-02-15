@@ -1,3 +1,3 @@
 ---
-view: home.njk
+view: home
 ---
