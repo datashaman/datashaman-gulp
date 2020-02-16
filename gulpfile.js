@@ -79,9 +79,9 @@ const documents = () => {
     loadedDocuments = null
 
     let documents = {}
-    let pages = []
-    let posts = []
+    let feed = []
     let tags = {}
+    let urls = []
 
     return gulp.src(paths.documents)
         .pipe(plugins.frontMatter({
@@ -110,18 +110,26 @@ const documents = () => {
                 }
 
                 if (file.data.view === 'page') {
-                    pages.push(id)
+                    urls.push({
+                        id,
+                        priority: '0.8000',
+                    })
                 }
 
                 if (file.data.view === 'post') {
-                    posts.push({
+                    feed.push({
                         id,
                         date: file.data.date,
+                    })
+                    urls.push({
+                        id,
+                        priority: '0.6000',
                     })
                 }
 
                 documents[id] = {
                     id,
+                    extname: file.extname,
                     path: file.path.replace(file.base + '/', ''),
                     data: file.data,
                     contents: file.contents.toString(),
@@ -150,6 +158,7 @@ const documents = () => {
 
                         documents[pageId] = {
                             id: pageId,
+                            extname: '.md',
                             path: index ? `${tag}/page/${index+1}/index.md` : `${tag}/index.md`,
                             data: {
                                 posts: {
@@ -161,10 +170,16 @@ const documents = () => {
                                 },
                                 tag,
                                 title: tag,
+                                url: index ? `/${tag}/page/${index+1}/` : `/${tag}/`,
                                 view: 'tag',
                             },
                             contents: '',
                         }
+
+                        urls.push({
+                            id: pageId,
+                            priority: '0.7000',
+                        })
                     })
 
                     pagination = paginate(tags[tag].map(defn => defn.id), TAGS_LIMIT)
@@ -186,16 +201,23 @@ const documents = () => {
 
                 documents[pageId] = {
                     id: pageId,
+                    extname: '.md',
                     path: 'tags/index.md',
                     data: {
                         tags,
                         title: 'Tags',
+                        url: '/tags/',
                         view: 'tags',
                     },
                     contents: '',
                 }
 
-                posts = posts
+                urls.push({
+                    id: pageId,
+                    priority: '0.8000',
+                })
+
+                feed = feed
                     .sort((a, b) => b.date - a.date)
                     .map(post => post.id)
 
@@ -203,23 +225,24 @@ const documents = () => {
                 
                 documents[pageId] = {
                     id: pageId,
+                    extname: '.xml',
                     path: 'feed.xml',
                     data: {
-                        pages,
-                        posts: posts.slice(0, FEED_LIMIT),
+                        entries: feed.slice(0, FEED_LIMIT),
                         url: '/feed.xml',
                         view: 'feed',
                     },
                     contents: '',
                 }
 
-                const pagination = paginate(posts, PAGE_LIMIT)
+                const pagination = paginate(feed, PAGE_LIMIT)
 
                 pagination.pages.forEach((page, index) => {
                     const pageId = uniqid()
 
                     documents[pageId] = {
                         id: pageId,
+                        extname: '.md',
                         path: index ? `page/${index+1}/index.md` : 'index.md',
                         data: {
                             posts: {
@@ -230,11 +253,32 @@ const documents = () => {
                                 perPage: pagination.perPage,
                             },
                             title: index ? `Page ${index+1}` : '',
+                            url: index ? `/page/${index+1}/` : '/',
                             view: 'home',
                         },
                         contents: '',
                     }
+
+                    if (!index) {
+                        urls.push({
+                            id: pageId,
+                        })
+                    }
                 })
+
+                pageId = uniqid()
+
+                documents[pageId] = {
+                    id: pageId,
+                    extname: '.xml',
+                    path: 'sitemap.xml',
+                    data: {
+                        urls,
+                        url: '/sitemap.xml',
+                        view: 'sitemap',
+                    },
+                    contents: '',
+                }
 
                 const contents = yaml.dump(documents)
                 fs.writeFile('documents.yml', contents, cb)
@@ -246,7 +290,9 @@ const generateDocuments = () => {
     return gulp.src('documents.yml')
         .pipe(generate())
         .pipe(gulpIf(
-            (file) => file.extname === '.md',
+            (file) => {
+                return file.extname === '.md'
+            },
             plugins.markdown()
         ))
         .pipe(plugins.wrap(

@@ -12,6 +12,7 @@ module.exports = () => {
             const data = {
                 contents: Buffer.from(sourceFile.contents),
                 data: sourceFile.data,
+                extname: sourceFile.extname,
                 path: sourceFile.path,
             }
             this.push(new Vinyl(data))
