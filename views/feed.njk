@@ -5,7 +5,7 @@
 <link href="{{ site.link }}/feed.xml" rel="self" />
 <link href="{{ site.link }}/" />
 <id>urn:uuid:{{ site.id }}</id>
-<updated>{{ updated }}</updated>
+<updated>{{ document(entries[0]).data.date|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</updated>
 
 {% for id in entries %}
     {% set entry = document(id) %}
