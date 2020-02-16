@@ -1,10 +1,11 @@
 const crypto = require('crypto')
 const feather = require('feather-icons')
 const fs = require('fs')
+const markdown = require('nunjucks-markdown')
+const marked = require('marked')
 const nunjucks = require('nunjucks')
 const nunjucksDate = require('nunjucks-date')
 const yaml = require('js-yaml')
-
 
 nunjucksDate.setDefaultFormat("YYYY-MM-DD hh:mm")
 
@@ -22,6 +23,8 @@ nunjucksEnv.addGlobal('document', id => {
 nunjucksEnv.addGlobal('feather', id => {
     return feather.icons[id].toSvg()
 })
+
+markdown.register(nunjucksEnv, marked)
 
 let sourceData = null
 

@@ -1,6 +1,6 @@
 @import "../../node_modules/water.css/dist/light.standalone";
-@import "../../node_modules/purecss/build/grids";
 @import "../../node_modules/purecss/build/buttons";
+@import "../../node_modules/purecss/build/grids";
 
 article,
 header,
@@ -33,7 +33,7 @@ section {
 
 article {
     border-top: 1px solid var(--background);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     padding-top: 10px;
 }
 
@@ -69,6 +69,7 @@ h3 {
 }
 
 .tags {
+    float: right;
     margin-top: 10px;
     text-align: center;
 
@@ -84,8 +85,8 @@ h3 {
     }
 }
 
-.view--tags .tag {
-    margin-bottom: 10px;
+.view--tags h3 {
+    margin-bottom: 0;
 }
 
 .button-tag {
@@ -192,6 +193,7 @@ nav {
     }
 
     .tags {
+        margin-top: 0;
         text-align: right;
     }
 }
