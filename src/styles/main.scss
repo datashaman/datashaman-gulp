@@ -69,9 +69,7 @@ h3 {
 }
 
 .tags {
-    float: right;
-    margin-top: 10px;
-    text-align: center;
+    text-align: right;
 
     ul {
         list-style: none;
@@ -81,7 +79,7 @@ h3 {
 
     li {
         display: inline-block;
-        margin-left: 10px;
+        margin-left: 3px;
     }
 }
 
@@ -93,13 +91,13 @@ h3 {
     background: #0076d1;
     border-radius: 10%;
     color: #fff;
-    font-size: small;
+    font-size: x-small;
     font-weight: bolder;
 }
 
 .button-more {
     border-radius: 10%;
-    font-size: small;
+    font-size: x-small;
     font-weight: bolder;
 }
 
@@ -195,6 +193,11 @@ nav {
     .tags {
         margin-top: 0;
         text-align: right;
+    }
+
+    .button-tag,
+    .button-more {
+        font-size: small;
     }
 }
 
