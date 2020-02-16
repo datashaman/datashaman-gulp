@@ -16,11 +16,13 @@
         <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
         <updated>{{ entry.data.date|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</updated>
         {% if entry.data.excerpt %}
-            <summary type="xhtml">
-                {% markdown %}{{ entry.data.excerpt }}{% endmarkdown %}
+            <summary type="xhtml" xml:lang="en">
+                <div xmlns="http://www.w3.org/1999/xhtml">
+                    {% markdown %}{{ entry.data.excerpt }}{% endmarkdown %}
+                </div>
             </summary>
         {% endif %}
-        <content type="xhtml">
+        <content type="xhtml" xml:lang="en">
             <div xmlns="http://www.w3.org/1999/xhtml">
                 {% markdown %}{{ entry.contents }}{% endmarkdown %}
             </div>
