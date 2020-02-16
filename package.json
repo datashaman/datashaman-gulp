@@ -32,7 +32,6 @@
     "html-webpack-plugin": "^3.2.0",
     "js-yaml": "^3.13.1",
     "lead": "^1.0.0",
-    "node-uuid": "^1.4.8",
     "nunjucks": "^3.2.0",
     "nunjucks-date": "^1.5.0",
     "purecss": "^1.0.1",
