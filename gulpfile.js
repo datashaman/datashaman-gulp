@@ -159,7 +159,7 @@ const documents = () => {
                         documents[pageId] = {
                             id: pageId,
                             extname: '.md',
-                            path: index ? `${tag}/page/${index+1}/index.md` : `${tag}/index.md`,
+                            path: index ? `tags/${tag}/page/${index+1}/index.md` : `tags/${tag}/index.md`,
                             data: {
                                 posts: {
                                     items: page,
