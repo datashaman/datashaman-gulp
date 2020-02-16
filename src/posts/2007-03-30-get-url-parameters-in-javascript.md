@@ -4,6 +4,9 @@ date: 2007-03-30 12:00:00
 redirects:
     - /blog/2007/03/30/get-url-parameters-in-javascript/
 view: post
+tags:
+    - dev
+    - javascript
 comments:
     - name: John Hill
       link: http://www.theglasspeople.net/
@@ -18,6 +21,7 @@ comments:
       date: 2006-06-26 21:07
       text: |
         Thanks! Glad you liked it. :)
+
         It’s not very obvious that it’s a link, but if you click on the PLAIN TEXT heading above each code block, it converts the block to text, for easy copy and pasting. 
 ---
 I needed a _Javascript_ function which would give me access to the URL querystring, much like PHP's `$_GET` associative array. Unfortunately most of the solutions I found were either wrong, incomplete or badly written. IMHO. :)
@@ -49,11 +53,11 @@ I'm surprised that the _DOM_ standard hasn't given us an easy way of accessing t
      */
     function setupParameters() {
         var parameters = new Object();
-     
+
         if(window.location.search) {
             var paramArray = window.location.search.substr(1).split(‘&’);
             var length = paramArray.length;
-     
+
             for (var index = 0;index <length; index++ ) {
                 var param = paramArray[index].split(‘=’);
                 var name = param[0];

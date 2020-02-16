@@ -1,36 +1,35 @@
 {% extends 'default.njk' %}
 
 {% block content %}
-<article class="pure-g">
-    <div class="pure-u-1-4">
-        <a href="{{ site.link }}">
-            <time>{{ file.data.date|date }}</time>
-        </a>
-    </div>
+    <article>
+        <aside>
+            <a href="{{ site.link }}">
+                <time>{{ file.data.date|date }}</time>
+            </a>
+        </aside>
 
-    <div class="pure-u-3-4">
-        <h3><a href="{{ file.data.url }}">{{ file.data.title }}</a></h3>
-
-        {{ contents|safe }}
-    </div>
+        <main>
+            <h2>{{ file.data.title }}</h2>
+            {{ contents|safe }}
+        </main>
+    </article>
 
     {% if file.data.comments %}
-    <div class="comments pure-g">
-        {% for comment in file.data.comments %}
-        <div class="comment">
-            <div class="pure-u-1-4">
-                <time>{{ comment.date|date }}</time>
-            </div>
-            <div class="pure-u-3-4">
-                <div>
-                    <a href="{{ comment.link }}" rel="noopener noreferer" target="_blank">{{ comment.name }}</a>
-                </div>
+        <section class="comments">
+            {% for comment in file.data.comments %}
+                <div class="comment">
+                    <aside>
+                        <time>{{ comment.date|date }}</time>
+                    </aside>
+                    <main>
+                        <h4>
+                            <a href="{{ comment.link }}" rel="noopener noreferer" target="_blank">{{ comment.name }}</a>
+                        </h4>
 
-                {{ comment.text }}
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+                        {{ comment.text }}
+                    </main>
+                </div>
+            {% endfor %}
+        </section>
     {% endif %}
-</article>
 {% endblock %}

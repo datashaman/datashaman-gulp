@@ -1,31 +1,67 @@
 @import "../../node_modules/water.css/dist/light.standalone";
 @import "../../node_modules/purecss/build/grids";
+@import "../../node_modules/purecss/build/buttons";
 
-main {
-  max-width: 110ch;
-  padding: 2ch;
-  margin: auto;
+article,
+header,
+section {
+    margin: auto;
+    max-width: 110ch;
+    overflow: auto;
 }
 
-.view--home h3,
-.view--post h3,
-.view--page h3
-{
-  margin-top: 0;
+header {
+    font-size: x-large;
+    margin-bottom: 10px;
+
+    h1 {
+        font-size: inherit;
+    }
+
+    p {
+        margin-top: 0;
+    }
 }
 
-.view--home article
-{
+article,
+header,
+section {
+    h2 {
+        margin-top: 0;
+    }
+}
+
+article {
     margin-bottom: 10px;
 }
 
-.view--home article time,
-.view--post article time,
-.view--page article time
-{
+aside {
+    float: left;
     position: relative;
-    top: 3px;
     text-align: right;
+    width: 23%;
+
+    time {
+        position: relative;
+        top: 3px;
+    }
+}
+
+main {
+    width: 75%;
+    float: right;
+}
+
+h3 {
+    margin-top: 0;
+}
+
+.view--post aside time {
+    top: 9px;
+}
+
+.gravatar {
+    border-radius: 50%;
 }
 
 .tags {
@@ -40,19 +76,88 @@ main {
 
     li {
         display: inline-block;
-        margin-right: 10px;
+        margin-left: 10px;
     }
+}
+
+.view--tags .tag {
+    margin-bottom: 10px;
+}
+
+.button-tag {
+    background: #0076d1;
+    border-radius: 10%;
+    color: #fff;
+    font-size: small;
+    font-weight: bolder;
+}
+
+.button-more {
+    border-radius: 10%;
+    font-size: small;
+    font-weight: bolder;
 }
 
 .comments {
     padding-top: 10px;
     border-top: 1px solid;
 
+    h4 {
+        margin-top: 0;
+    }
+
     .comment {
+        overflow: auto;
         margin-bottom: 10px;
+    }
+
+    aside time {
+        top: 0;
     }
 }
 
 .pagination {
     text-align: center;
+
+    ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    li {
+        display: inline-block;
+    }
+
+    a {
+        display: inline-block;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+
+    a.active {
+        cursor: default;
+        color: #ccc;
+    }
+
+    a:hover:not(.active) {
+        background-color: #ccc;
+        border: 1px solid;
+    }
+}
+
+nav {
+    ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        text-align: right;
+    }
+
+    li {
+        display: inline-block;
+    }
+}
+
+footer {
 }

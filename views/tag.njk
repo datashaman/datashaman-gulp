@@ -2,5 +2,11 @@
 {% from 'macros.njk' import render_posts %} 
 
 {% block content %}
-    {{ render_posts(tags[tag], index) }}
+    <header>
+        <aside></aside>
+        <main>
+            <h2><em>{{ tag }}</em> tag</h2>
+        </main>
+    </header>
+    {{ render_posts(posts, '/' + tag) }}
 {% endblock %}

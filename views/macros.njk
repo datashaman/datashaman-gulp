@@ -1,30 +1,62 @@
-{% macro render_posts(posts) %}
-{% for post in posts %}
-<article class="pure-g">
-    <div class="pure-u-1-4">
-        <a href="{{ site.link }}">
-            <time>{{ post.data.date|date }}</time>
-        </a>
-    </div>
-    <div class="pure-u-3-4">
-        <h3>
-            <a href="{{ post.data.url }}">{{ post.data.title }}</a>
-        </h3>
+{% macro render_posts(posts, base = '', pagination = true) %}
+{% for id in posts.items %}
+    {% set post = document(id) %}
+    <article>
+        <aside>
+            <a href="{{ post.data.url }}">
+                <time>{{ post.data.date|date }}</time>
+            </a>
+        </aside>
+        <main>
+            <h3>
+                <a href="{{ post.data.url }}">{{ post.data.title }}</a>
+            </h3>
 
-        {{ post.data.excerpt|default(post.contents)|safe }}
+            {{ post.data.excerpt|default(post.contents)|safe }}
 
-        {% if post.data.excerpt %}<a href="{{ post.data.url }}">more</a>{% endif %}
+            {% if post.data.excerpt %}<a class="button-more pure-button" href="{{ post.data.url }}">more</a>{% endif %}
 
-        {% if post.data.tags %}
-        <div class="tags">
-            <ul>
-                {% for tag in post.data.tags %}
-                <li><a href="/tags/{{ tag }}/">#{{ tag }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-    </div>
-</article>
+            {% if post.data.tags %}
+                {{ render_tags(post.data.tags) }}
+            {% endif %}
+        </main>
+    </article>
 {% endfor %}
+
+{% if posts.lastPage > 1 %}
+    <section>
+        <aside>
+        </aside>
+        <main>
+            {% if pagination %}
+                <div class="pagination">
+                    <ul>
+                        {% for index in range(posts.lastPage) %}
+                            {% set page = index + 1 %}
+                            {% if page == posts.currentPage %}
+                                <li><a href="#" class="active">{{ index + 1 }}</a></li>
+                            {% elif page == 1 %}
+                                <li><a href="{{ base }}/">1</a></li>
+                            {% else %}
+                                <li><a href="{{ base }}/page/{{ index + 1 }}/">{{ index + 1 }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <a class="button-more pure-button" href="{{ base }}/">{{ posts.total - posts.items.length }} more posts</a>
+            {% endif %}
+        </main>
+    </section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_tags(tags) %}
+<div class="tags">
+    <ul>
+        {% for tag in tags %}
+            <li><a class="button-tag pure-button" href="/{{ tag }}/">{{ tag }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
 {% endmacro %}

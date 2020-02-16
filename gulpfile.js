@@ -1,19 +1,24 @@
-const { src, dest, task, series, parallel, watch } = require('gulp')
+require('dotenv').config()
+
 const browserSync = require('browser-sync').create()
 const compiler = require('webpack')
 const del = require('del')
 const fs = require('fs')
+const generate = require('./gulp/lib/generate')
+const gulp = require('gulp')
 const log = require('fancy-log')
+const more = require('./gulp/lib/more')
+const nunjucks = require('./nunjucks')
 const plugins = require('gulp-load-plugins')()
+const postDates = require('./gulp/lib/post-dates')
+const sink = require('lead')
 const through = require('through2')
 const uniqid = require('uniqid')
-const Vinyl = require('vinyl')
 const webpack = require('webpack-stream')
-
-const nunjucks = require('./nunjucks')
+const yaml = require('js-yaml')
 
 const paths = {
-    posts: [
+    documents: [
         './src/**/*.md',
     ],
     scripts: './src/scripts/main.js',
@@ -22,178 +27,229 @@ const paths = {
     ],
 }
 
-function more() {
-    return through.obj(
-        (file, encoding, cb) => {
-            const contents = file.contents.toString()
-            const parts = contents.split(/\s*\<!--more--\>/)
-            
-            if(parts.length > 1) {
-                file.data.excerpt = parts[0]
-            }
+const PAGE_LIMIT = 6
+const TAGS_LIMIT = 1
 
-            cb(null, file)
-        }
-    )
+function paginate(arr, perPage) {
+    const pages = []
+    const total = arr.length
+
+    while (arr.length) {
+        pages.push(arr.splice(0, perPage))
+    }
+
+    return {
+        total,
+        perPage,
+        pages,
+    }
 }
 
-let counter = 0
-
-function index() {
-    return through.obj(
-        (file, encoding, cb) => {
-            file.data.id = uniqid()
-            cb(null, file)
-        }
-    )
+const clean = () => {
+    return del([
+        './build',
+        './documents.yml',
+    ])
 }
 
-function tags() {
-    nunjucks.tags = {}
-
-    return through.obj(
-        (file, encoding, cb) => {
-            let fileTags = file.data.tags || []
-
-            if(file.data.tag) {
-                fileTags.push(tag)
-            }
-
-            fileTags.forEach(tag => {
-                if (typeof nunjucks.tags[tag] === 'undefined') {
-                    nunjucks.tags[tag] = []
-                }
-
-                nunjucks.tags[tag].push({
-                    id: file.data.id,
-                    date: file.data.date,
-                })
-            })
-
-            cb(null, file)
-        },
-        function (cb) {
-            Object.keys(nunjucks.tags).forEach(tag => {
-                nunjucks.tags[tag].sort((a, b) => a.date - b.date)
-
-                contents = ''
-
-                this.push(new Vinyl({
-                    data: {
-                        tag,
-                        title: tag,
-                        view: 'tag',
-                    },
-                    path: 'tags/' + tag + '/index.md',
-                    contents: Buffer.from(contents)
-                }))
-            })
-
-            cb()
-        }
-    )
-}
-
-function hydrateTags() {
-    return through.obj(
-        (file, encoding, cb) => {
-            Object.keys(nunjucks.tags).forEach(tag => {
-                nunjucks.tags[tag] = nunjucks.tags[tag].map(defn => {
-                    if (defn.id == file.data.id) {
-                        return file
-                    }
-
-                    return defn
-                })
-            })
-
-            cb(null, file)
-        }
-    )
-}
-
-function data() {
-    return src(paths.posts)
-        .pipe(plugins.frontMatter({
-            property: 'data',
-            remove: true,
-        }))
-        .pipe(more())
-        .pipe(index())
-}
-
-function posts() {
-    return data()
-        .pipe(plugins.rename(path => {
-            const result = path.basename.match(/^(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})-(?<slug>.*)$/)
-
-            if (result) {
-                const { groups: { year, month, day, slug }} = result
-
-                path.dirname = `${path.dirname}/${year}/${month}/${day}/${slug}`
-                path.basename = 'index'
-                path.extname = '.md'
-            }
-        }))
-        .pipe(tags())
-        .pipe(plugins.markdown())
-        .pipe(plugins.ssg())
-        .pipe(hydrateTags())
-        .pipe(plugins.wrap(
-            (data) => fs.readFileSync('./views/' + data.view + '.njk').toString(),
-            nunjucks, 
-            { engine: 'nunjucks' }
-        ))
-        .pipe(dest('./build'))
-}
-
-function scripts() {
-    return src(paths.scripts)
+const scripts = () => {
+    return gulp.src(paths.scripts)
         .pipe(webpack({
             mode: process.env.NODE_ENV || 'development',
             output: {
                 filename: 'main.js',
             },
         }))
-        .pipe(dest('./build/scripts'))
+        .pipe(gulp.dest('./build/scripts'))
 }
 
-function styles() {
-    return src(paths.styles)
+
+const styles = () => {
+    return gulp.src(paths.styles)
         .pipe(plugins.sourcemaps.init())
         .pipe(plugins.sass())
         .pipe(plugins.sourcemaps.write())
-        .pipe(dest('./build/styles'))
-        .pipe(browserSync.reload({
-            stream: true,
+        .pipe(gulp.dest('./build/styles'))
+        .pipe(browserSync.stream())
+}
+
+const documents = () => {
+    loadedDocuments = null
+
+    let documents = {}
+    let posts = []
+    let tags = {}
+
+    return gulp.src(paths.documents)
+        .pipe(plugins.frontMatter({
+            property: 'data',
+            remove: true,
         }))
+        .pipe(more())
+        .pipe(postDates())
+        .pipe(plugins.ssg())
+        .pipe(sink(through.obj(
+            (file, encoding, cb) => {
+                id = uniqid()
+
+                const fileTags = file.data.tags || []
+
+                if (file.data.tag) {
+                    fileTags.push(file.data.tag)
+                    delete file.data.tag
+                }
+
+                if (file.data.date) {
+                    file.data.date = new Date(file.data.date)
+                }
+
+                if (file.data.view === 'post') {
+                    posts.push({
+                        id,
+                        date: file.data.date,
+                    })
+                }
+
+                documents[id] = {
+                    id,
+                    path: file.path.replace(file.base + '/', ''),
+                    data: file.data,
+                    contents: file.contents.toString(),
+                }
+
+                fileTags.forEach(tag => {
+                    if (typeof tags[tag] === 'undefined') {
+                        tags[tag] = []
+                    }
+
+                    tags[tag].push({
+                        date: file.data.date,
+                        id,
+                    })
+                })
+
+                cb()
+            },
+            function (cb) {
+                Object.keys(tags).forEach(tag => {
+                    tags[tag].sort((a, b) => b.date - a.date)
+                    let pagination = paginate(tags[tag].map(defn => defn.id), PAGE_LIMIT)
+
+                    pagination.pages.forEach((page, index) => {
+                        const pageId = uniqid()
+
+                        documents[pageId] = {
+                            id: pageId,
+                            path: index ? `${tag}/page/${index+1}/index.md` : `${tag}/index.md`,
+                            data: {
+                                posts: {
+                                    items: page,
+                                    total: pagination.total,
+                                    currentPage: index + 1,
+                                    lastPage: pagination.pages.length,
+                                    perPage: pagination.perPage,
+                                },
+                                tag,
+                                title: tag,
+                                view: 'tag',
+                            },
+                            contents: '',
+                        }
+                    })
+
+                    pagination = paginate(tags[tag].map(defn => defn.id), TAGS_LIMIT)
+
+                    tags[tag] = {
+                        items: pagination.pages[0],
+                        lastPage: pagination.pages.length,
+                        total: pagination.total,
+                    }
+                })
+
+                const pageId = uniqid()
+
+                tags = Object.keys(tags).sort().reduce((acc, tag) => {
+                    acc[tag] = tags[tag]
+
+                    return acc
+                }, {})
+
+                documents[pageId] = {
+                    id: pageId,
+                    path: 'tags/index.md',
+                    data: {
+                        tags,
+                        title: 'Tags',
+                        view: 'tags',
+                    },
+                    contents: '',
+                }
+
+                posts = posts
+                    .sort((a, b) => b.date - a.date)
+                    .map(post => post.id)
+
+                const pagination = paginate(posts, PAGE_LIMIT)
+
+                pagination.pages.forEach((page, index) => {
+                    const pageId = uniqid()
+
+                    documents[pageId] = {
+                        id: pageId,
+                        path: index ? `page/${index+1}/index.md` : 'index.md',
+                        data: {
+                            posts: {
+                                items: page,
+                                total: pagination.total,
+                                currentPage: index + 1,
+                                lastPage: pagination.pages.length,
+                                perPage: pagination.perPage,
+                            },
+                            title: index ? `Page ${index+1}` : '',
+                            view: 'home',
+                        },
+                        contents: '',
+                    }
+                })
+
+                const contents = yaml.dump(documents)
+                fs.writeFile('documents.yml', contents, cb)
+            }
+        )))
 }
 
-function clean() {
-    return del('./build')
+const generateDocuments = () => {
+    return gulp.src('documents.yml')
+        .pipe(generate())
+        .pipe(plugins.markdown())
+        .pipe(plugins.wrap(
+            (data) => {
+                return fs
+                    .readFileSync('./views/' + data.view + '.njk')
+                    .toString()
+            },
+            nunjucks, 
+            { engine: 'nunjucks' }
+        ))
+        .pipe(gulp.dest('./build'))
 }
 
-task('watch', () => {
-    watch(paths.scripts, scripts)
-    watch(paths.posts, posts)
-    watch(paths.styles, styles)
-})
-
-task('browserSync', () => {
+const watch = (cb) => {
     browserSync.init({
         server: {
             baseDir: 'build',
         },
     })
-})
 
-const build = series(clean, parallel(series(scripts, posts), styles))
+    gulp.watch(paths.scripts, gulp.series(scripts))
+    gulp.watch(paths.styles, gulp.series(styles))
 
-exports.clean = clean
-exports.data = data
-exports.posts = posts
-exports.scripts = scripts
-exports.styles = styles
-exports.watch = series('browserSync', build, 'watch')
-exports.build = build
-exports.default  = build
+    const watchPaths = ['./views/**/*.njk'].concat(paths.documents)
+    gulp.watch(watchPaths, gulp.series(documents, generateDocuments)).on('change', browserSync.reload)
+
+    cb()
+}
+
+exports.build = gulp.series(clean, scripts, styles, documents, generateDocuments)
+exports.serve = gulp.series(exports.build, watch)
+exports.default = exports.serve

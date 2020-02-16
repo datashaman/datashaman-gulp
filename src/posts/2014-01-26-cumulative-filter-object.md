@@ -2,6 +2,10 @@
 title: Cumulative Filter Object
 date: 2014-01-26 12:00:00
 view: post
+tags:
+    - dev
+    - coffeescript
+    - javascript
 ---
 I've created a cumulative object in coffeescript, useful for creating filters.
 

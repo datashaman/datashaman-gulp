@@ -1,0 +1,26 @@
+{% extends 'default.njk' %}
+{% from 'macros.njk' import render_posts %} 
+
+{% block content %}
+    <header>
+        <aside>
+        </aside>
+        <main>
+            <h2>tags</h2>
+        </main>
+    </header>
+
+    {% for tag, posts in tags %}
+        <div class="tag">
+            <header>
+                <aside>
+                </aside>
+                <main>
+                    <h3><a href="/{{ tag }}/">{{ tag }}</a></h3>
+                </main>
+            </header>
+
+            {{ render_posts(posts, '/' + tag, false) }}
+        </div>
+    {% endfor %}
+{% endblock %}

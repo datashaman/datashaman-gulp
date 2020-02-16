@@ -4,6 +4,10 @@ title: 10 line accordian script for jQuery (or less)
 redirects:
     - /blog/2007/04/09/10-line-accordian-script-for-jquery/
 date: 2007-04-09 12:00:00
+tags:
+    - dev
+    - javascript
+    - jquery
 ---
 Anyone who's used jQuery, knows that you can write less and do more with JavaScript.
 
