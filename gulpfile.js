@@ -50,7 +50,7 @@ function paginate(arr, perPage) {
 const clean = () => {
     return del([
         './build',
-        './var/documents.yml',
+        './documents.yml',
     ])
 }
 
@@ -281,13 +281,13 @@ const documents = () => {
                 }
 
                 const contents = yaml.dump(documents)
-                fs.writeFile('./var/documents.yml', contents, cb)
+                fs.writeFile('./documents.yml', contents, cb)
             }
         )))
 }
 
 const generateDocuments = () => {
-    return gulp.src('./var/documents.yml')
+    return gulp.src('./documents.yml')
         .pipe(generate())
         .pipe(gulpIf(
             (file) => {
