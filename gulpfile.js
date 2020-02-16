@@ -324,5 +324,6 @@ const watch = (cb) => {
 }
 
 exports.build = gulp.series(clean, scripts, styles, documents, generateDocuments)
+exports.clean = clean
 exports.serve = gulp.series(exports.build, watch)
 exports.default = exports.serve
