@@ -11,7 +11,7 @@ section {
 }
 
 header {
-    font-size: x-large;
+    font-size: large;
     margin-bottom: 10px;
 
     h1 {
@@ -32,24 +32,28 @@ section {
 }
 
 article {
-    margin-bottom: 10px;
+    border-top: 1px solid var(--background);
+    margin-bottom: 20px;
+    padding-top: 10px;
 }
 
 aside {
-    float: left;
     position: relative;
-    text-align: right;
-    width: 23%;
 
     time {
+        font-size: small;
         position: relative;
         top: 3px;
     }
 }
 
-main {
-    width: 75%;
-    float: right;
+header aside,
+header main {
+    text-align: center;
+}
+
+aside {
+    margin-bottom: 5px;
 }
 
 h3 {
@@ -66,7 +70,7 @@ h3 {
 
 .tags {
     margin-top: 10px;
-    text-align: right;
+    text-align: center;
 
     ul {
         list-style: none;
@@ -147,11 +151,12 @@ h3 {
 }
 
 nav {
+    text-align: center;
+
     ul {
         padding: 0;
         margin: 0;
         list-style: none;
-        text-align: right;
     }
 
     li {
@@ -159,5 +164,35 @@ nav {
     }
 }
 
-footer {
+@media screen and (min-width: 35.5em) {
+    aside {
+        text-align: right;
+        float: left;
+        margin-bottom: 0;
+        width: 23%;
+    }
+
+    main {
+        width: 75%;
+        float: right;
+    }
+
+    header aside {
+        text-align: right;
+    }
+
+    header main {
+        text-align: left;
+    }
+
+    nav {
+        ul {
+            text-align: right;
+        }
+    }
+
+    .tags {
+        text-align: right;
+    }
 }
+
