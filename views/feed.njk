@@ -2,8 +2,8 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 <title>{{ site.title }}</title>
 <subtitle>{{ site.subtitle }}</subtitle>
-<link href="{{ site.link }}feed.xml" rel="self" />
-<link href="{{ site.link }}" />
+<link href="{{ site.link }}{{ data.url }}" rel="self" />
+<link href="{{ site.link }}/" />
 <id>{{ site.id }}</id>
 <updated>{{ updated }}</updated>
 
@@ -17,12 +17,12 @@
         <updated>{{ entry.data.date|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</updated>
         {% if entry.data.excerpt %}
             <summary type="xhtml">
-                {% markdown %}{{ entry.data.excerpt|safe }}{% endmarkdown %}
+                {% markdown %}{{ entry.data.excerpt }}{% endmarkdown %}
             </summary>
         {% endif %}
         <content type="xhtml">
             <div xmlns="http://www.w3.org/1999/xhtml">
-                {% markdown %}{{ entry.contents|safe }}{% endmarkdown %}
+                {% markdown %}{{ entry.contents }}{% endmarkdown %}
             </div>
         </content>
         <author>
