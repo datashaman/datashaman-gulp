@@ -1,4 +1,5 @@
 ---
+id: 86c010a3-a527-45cb-8974-18470b5222b8
 title: Get URL Parameters in Javascript
 date: 2007-03-30 12:00:00
 redirects:

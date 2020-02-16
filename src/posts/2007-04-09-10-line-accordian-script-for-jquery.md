@@ -1,4 +1,5 @@
 ---
+id: 832a86d4-789b-4b4a-82d0-ff9cc649dd9a
 view: post
 title: 10 line accordian script for jQuery (or less)
 redirects:

@@ -4,7 +4,7 @@
 <subtitle>{{ site.subtitle }}</subtitle>
 <link href="{{ site.link }}/feed.xml" rel="self" />
 <link href="{{ site.link }}/" />
-<id>{{ site.id }}</id>
+<id>urn:uuid:{{ site.id }}</id>
 <updated>{{ updated }}</updated>
 
 {% for id in entries %}
@@ -13,7 +13,7 @@
         <title>{{ entry.data.title }}</title>
         <link href="{{ entry.data.url }}" />
         <!--<link rel="edit" href="http://example.org/2003/12/13/atom03/edit"/>-->
-        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+        <id>urn:uuid:{{ entry.data.id }}</id>
         <updated>{{ entry.data.date|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</updated>
         {% if entry.data.excerpt %}
             <summary type="xhtml" xml:lang="en">
