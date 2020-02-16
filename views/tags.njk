@@ -14,13 +14,13 @@
         <div class="tag">
             <header class="tag-header">
                 <aside>
-                    <h3><a href="/{{ tag }}/">{{ tag }}</a></h3>
+                    <h3><a href="/tags/{{ tag }}/">{{ tag }}</a></h3>
                 </aside>
                 <main>
                 </main>
             </header>
 
-            {{ render_posts(posts, '/' + tag, false) }}
+            {{ render_posts(posts, '/tags/' + tag, false) }}
         </div>
     {% endfor %}
 {% endblock %}
