@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>{{ site.title }}</title>
+<subtitle>{{ site.subtitle }}</subtitle>
+<link href="{{ site.link }}feed.xml" rel="self" />
+<link href="{{ site.link }}" />
+<id>{{ site.id }}</id>
+<updated>{{ updated }}</updated>
+
+{% for id in posts %}
+    {% set post = document(id) %}
+    <entry>
+        <title>{{ post.data.title }}</title>
+        <link href="{{ post.data.url }}" />
+        <!--<link rel="edit" href="http://example.org/2003/12/13/atom03/edit"/>-->
+        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+        <updated>{{ post.data.date|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</updated>
+        {% if post.data.excerpt %}
+            <summary type="xhtml">
+                {% markdown %}{{ post.data.excerpt|safe }}{% endmarkdown %}
+            </summary>
+        {% endif %}
+        <content type="xhtml">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+                {% markdown %}{{ post.contents|safe }}{% endmarkdown %}
+            </div>
+        </content>
+        <author>
+            <name>{{ author.name }}</name>
+            <email>{{ author.email }}</email>
+        </author>
+    </entry>
+{% endfor %}
+</feed>

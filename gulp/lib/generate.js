@@ -1,3 +1,4 @@
+const log = require('fancy-log')
 const through = require('through2')
 const Vinyl = require('vinyl')
 const yaml = require('js-yaml')

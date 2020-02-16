@@ -33,10 +33,14 @@ const gravatar = `https://gravatar.com/avatar/${hash}`
 
 module.exports = {
     author: {
+        link: process.env.LINK || 'https://datashaman.com/',
+        name: 'Marlin Forbes',
+        email: 'marlinf@datashaman.com',
         gravatar,
     },
     site: {
         title: 'datashaman',
+        subtitle: 'Freelance developer. Open-source solutions. Wannabe writer.',
         link: process.env.LINK || 'https://datashaman.com/',
     },
     nunjucksEnv,

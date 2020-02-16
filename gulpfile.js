@@ -6,6 +6,7 @@ const del = require('del')
 const fs = require('fs')
 const generate = require('./gulp/lib/generate')
 const gulp = require('gulp')
+const gulpIf = require('gulp-if')
 const log = require('fancy-log')
 const more = require('./gulp/lib/more')
 const nunjucks = require('./nunjucks')
@@ -27,6 +28,7 @@ const paths = {
     ],
 }
 
+const FEED_LIMIT = 30
 const PAGE_LIMIT = 6
 const TAGS_LIMIT = 1
 
@@ -77,6 +79,7 @@ const documents = () => {
     loadedDocuments = null
 
     let documents = {}
+    let pages = []
     let posts = []
     let tags = {}
 
@@ -87,7 +90,10 @@ const documents = () => {
         }))
         .pipe(more())
         .pipe(postDates())
-        .pipe(plugins.ssg())
+        .pipe(through.obj((file, encoding, cb) => {
+            file.data = Object.assign({ url: '/' + file.relative.replace(/index\..+$/, '') }, file.data || {})
+            cb(null, file)
+        }))
         .pipe(sink(through.obj(
             (file, encoding, cb) => {
                 id = uniqid()
@@ -101,6 +107,10 @@ const documents = () => {
 
                 if (file.data.date) {
                     file.data.date = new Date(file.data.date)
+                }
+
+                if (file.data.view === 'page') {
+                    pages.push(id)
                 }
 
                 if (file.data.view === 'post') {
@@ -166,7 +176,7 @@ const documents = () => {
                     }
                 })
 
-                const pageId = uniqid()
+                let pageId = uniqid()
 
                 tags = Object.keys(tags).sort().reduce((acc, tag) => {
                     acc[tag] = tags[tag]
@@ -188,6 +198,20 @@ const documents = () => {
                 posts = posts
                     .sort((a, b) => b.date - a.date)
                     .map(post => post.id)
+
+                pageId = uniqid()
+                
+                documents[pageId] = {
+                    id: pageId,
+                    path: 'feed.xml',
+                    data: {
+                        pages,
+                        posts: posts.slice(0, FEED_LIMIT),
+                        url: '/feed.xml',
+                        view: 'feed',
+                    },
+                    contents: '',
+                }
 
                 const pagination = paginate(posts, PAGE_LIMIT)
 
@@ -221,7 +245,10 @@ const documents = () => {
 const generateDocuments = () => {
     return gulp.src('documents.yml')
         .pipe(generate())
-        .pipe(plugins.markdown())
+        .pipe(gulpIf(
+            (file) => file.extname === '.md',
+            plugins.markdown()
+        ))
         .pipe(plugins.wrap(
             (data) => {
                 return fs
