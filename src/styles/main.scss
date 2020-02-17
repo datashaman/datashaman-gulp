@@ -212,3 +212,7 @@ nav {
     }
 
 }
+
+a[href^='mailto']::before {
+  content: none;
+}
