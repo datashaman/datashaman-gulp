@@ -14,7 +14,10 @@ header {
     font-size: large;
 
     h1 {
-        font-size: inherit;
+        position: relative;
+        top: -2px;
+        font-size: x-large;
+        font-weight: 400;
     }
 
     p {
@@ -194,6 +197,8 @@ nav {
     }
 
     nav {
+        float: right;
+
         ul {
             text-align: right;
         }
