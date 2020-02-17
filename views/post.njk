@@ -1,16 +1,16 @@
 {% extends 'default.njk' %}
 
 {% block content %}
-    <article>
+    <article class="h-entry">
         <aside>
-            <a href="{{ site.link }}">
-                <time>{{ file.data.date|date }}</time>
+            <a href="{{ file.data.url }}" class="u-url">
+                <time class="dt-published">{{ file.data.date|date }}</time>
             </a>
         </aside>
 
         <main>
-            <h2>{{ file.data.title }}</h2>
-            {{ contents|safe }}
+            <h2 class="p-name">{{ file.data.title }}</h2>
+            <div class="e-content">{{ contents|safe }}</div>
         </main>
     </article>
 
