@@ -1,5 +1,7 @@
 {% extends 'default.njk' %}
-{% from 'macros.njk' import render_tags %} 
+{% from 'macros.njk' import render_tags %}
+
+{% set description = file.data.excerpt %}
 
 {% block content %}
     <article class="h-entry">
