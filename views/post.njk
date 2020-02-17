@@ -5,7 +5,7 @@
     <article class="h-entry">
         <aside>
             <a href="{{ file.data.url }}" class="u-url">
-                <time class="dt-published">{{ file.data.date|date }}</time>
+                <time class="dt-published" datetime="{{ file.data.date|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ file.data.date|date }}</time>
             </a>
         </aside>
 
