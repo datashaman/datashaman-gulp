@@ -26,6 +26,14 @@ article {
     border-top: 1px solid var(--background);
     margin-bottom: 10px;
     padding-top: 10px;
+
+    .u-author {
+        float: right;
+
+        img {
+            border-radius: 50%;
+        }
+    }
 }
 
 aside {

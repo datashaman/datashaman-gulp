@@ -10,7 +10,12 @@
         </aside>
 
         <main>
+            <div class="u-author h-card">
+                <a class="u-url" href="{{ author.link }}"><img class="u-photo p-name" alt="Marlin Forbes" src="{{ author.gravatar}}" width="32" height="32"></a>
+            </div>
+
             <h2 class="p-name">{{ file.data.title }}</h2>
+
             <div class="e-content">{{ contents|safe }}</div>
 
             {% if file.data.tags %}
