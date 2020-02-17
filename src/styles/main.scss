@@ -7,28 +7,34 @@ header,
 section {
     margin: auto;
     max-width: 110ch;
+    padding: 2ch;
     overflow: auto;
 }
 
-header {
-    font-size: large;
+a {
+    color: #8d8d8d;
+}
 
-    h1 {
-        position: relative;
-        top: -2px;
-        font-size: x-large;
-        font-weight: 400;
-    }
-
+header,
+article {
     p {
         margin-top: 0;
     }
 }
 
+header.h-card {
+    padding-top: 0;
+
+    aside {
+        margin-bottom: 20px;
+    }
+}
+
 article {
     border-top: 1px solid var(--background);
-    margin-bottom: 10px;
-    padding-top: 10px;
+    margin-bottom: 2px;
+    padding-bottom: 10px;
+    padding-top: 0;
 
     .u-author {
         float: right;
@@ -37,15 +43,24 @@ article {
             border-radius: 50%;
         }
     }
+
+    aside {
+        margin-bottom: 0;
+        margin-top: 10px;
+    }
+
+    main h2 {
+        margin-top: 5px;
+        margin-bottom: 0;
+    }
 }
 
 aside {
-    position: relative;
+    margin-bottom: 0;
 
     time {
         font-size: small;
-        position: relative;
-        top: 3px;
+        vertical-align: baseline;
     }
 }
 
@@ -56,10 +71,6 @@ header main {
 
 aside {
     margin-bottom: 5px;
-}
-
-h3 {
-    margin-top: 0;
 }
 
 .view--post aside time {
@@ -83,14 +94,6 @@ h3 {
         display: inline-block;
         margin-left: 3px;
     }
-}
-
-.view--tags .tag header h3 {
-    border: 1px solid var(--background);
-    border-radius: 10%;
-    display: inline-block;
-    margin-bottom: 0;
-    padding: 5px;
 }
 
 .button-tag {
@@ -118,10 +121,6 @@ h3 {
     .comment {
         overflow: auto;
         margin-bottom: 10px;
-    }
-
-    aside time {
-        top: 0;
     }
 }
 
@@ -156,9 +155,6 @@ h3 {
 }
 
 nav {
-    margin-bottom: 10px;
-    text-align: center;
-
     ul {
         padding: 0;
         margin: 0;
@@ -170,12 +166,37 @@ nav {
     }
 }
 
+a[href^='mailto']::before {
+  content: none;
+}
+
+footer {
+    font-color: var(--text-muted);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 100;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 0;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
 @media screen and (min-width: 35.5em) {
     aside {
         text-align: right;
         float: left;
         margin-bottom: 0;
         width: 23%;
+
+        time {
+            line-height: 44px;
+        }
     }
 
     main {
@@ -185,7 +206,7 @@ nav {
 
     header .gravatar {
         position: relative;
-        top: 10px;
+        top: 5px;
         right: 16px;
     }
 
@@ -195,14 +216,6 @@ nav {
 
     header main {
         text-align: left;
-    }
-
-    nav {
-        float: right;
-
-        ul {
-            text-align: right;
-        }
     }
 
     .tags {
@@ -215,13 +228,6 @@ nav {
         font-size: small;
     }
 
-    .view--tags .tag header h3 {
-        border: none;
-        border-radius: 0;
-        display: block;
-        margin-bottom: 0;
-    }
-
     article,
     header,
     section {
@@ -230,8 +236,11 @@ nav {
         }
     }
 
-}
+    h1 {
+        font-size: 4rem;
+    }
 
-a[href^='mailto']::before {
-  content: none;
+    h2 {
+        font-size: 2rem;
+    }
 }
