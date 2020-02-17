@@ -2,12 +2,12 @@
 {% from 'macros.njk' import render_posts %} 
 
 {% block content %}
-    <header>
+    <header class="h-card">
         <aside>
-            <img class="gravatar" height="80" width="80" src="{{ author.gravatar }}"/>
+            <img class="gravatar u-photo" height="80" width="80" src="{{ author.gravatar }}"/>
         </aside>
-        <main>
-            <p>Freelance developer.<br>Open-source solutions.<br>Wannabe writer.</p>
+        <main class="p-note">
+            <p>Hi! My name is <span class="p-name">Marlin Forbes</span>.<br>Freelance developer.<br>Open-source solutions.<br>Wannabe writer.</p>
         </main>
     </header>
 
