@@ -70,6 +70,7 @@ const styles = () => {
     return gulp.src(paths.styles)
         .pipe(plugins.sourcemaps.init())
         .pipe(plugins.sass())
+        .pipe(plugins.cleanCss())
         .pipe(plugins.sourcemaps.write())
         .pipe(gulp.dest('./build/styles'))
         .pipe(browserSync.stream())
