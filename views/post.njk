@@ -1,4 +1,5 @@
 {% extends 'default.njk' %}
+{% from 'macros.njk' import render_tags %} 
 
 {% block content %}
     <article class="h-entry">
@@ -11,6 +12,11 @@
         <main>
             <h2 class="p-name">{{ file.data.title }}</h2>
             <div class="e-content">{{ contents|safe }}</div>
+
+            {% if file.data.tags %}
+                {{ render_tags(file.data.tags) }}
+            {% endif %}
+            </div>
         </main>
     </article>
 
