@@ -315,16 +315,16 @@ const watch = (cb) => {
         },
     })
 
-    gulp.watch(paths.scripts, gulp.series(scripts))
+    // gulp.watch(paths.scripts, gulp.series(scripts))
     gulp.watch(paths.styles, gulp.series(styles))
 
     const watchPaths = ['./views/**/*.njk'].concat(paths.documents)
-    gulp.watch(watchPaths, gulp.series(clean, scripts, styles, documents, generateDocuments)).on('change', browserSync.reload)
+    gulp.watch(watchPaths, gulp.series(clean, styles, documents, generateDocuments)).on('change', browserSync.reload)
 
     cb()
 }
 
-exports.build = gulp.series(clean, scripts, styles, documents, generateDocuments)
+exports.build = gulp.series(clean, styles, documents, generateDocuments)
 exports.clean = clean
 exports.serve = gulp.series(exports.build, watch)
 exports.default = exports.serve
