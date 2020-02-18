@@ -2,13 +2,29 @@
 @import '../../node_modules/purecss/build/buttons';
 @import '../../node_modules/purecss/build/grids';
 
+%clearfix {
+    &:before,
+    &:after {
+        content: ' ';
+        display: table;
+    }
+
+    &:after {
+        clear: both;
+    }
+
+    & {
+        *zoom: 1;
+    }
+}
+
 article,
 header,
 section {
     margin: auto;
     max-width: 110ch;
     padding: 2ch;
-    overflow: auto;
+    @extend %clearfix;
 }
 
 a {
@@ -129,8 +145,8 @@ aside {
 
     .comment,
     .mention {
-        overflow: auto;
         margin-bottom: 10px;
+        @extend %clearfix;
     }
 }
 
