@@ -1,6 +1,6 @@
-@import "../../node_modules/water.css/dist/light.standalone";
-@import "../../node_modules/purecss/build/buttons";
-@import "../../node_modules/purecss/build/grids";
+@import '../../node_modules/water.css/dist/light.standalone';
+@import '../../node_modules/purecss/build/buttons';
+@import '../../node_modules/purecss/build/grids';
 
 article,
 header,
@@ -41,14 +41,6 @@ article {
     padding-bottom: 10px;
     padding-top: 0;
 
-    .u-author {
-        float: right;
-
-        img {
-            border-radius: 50%;
-        }
-    }
-
     aside {
         margin-bottom: 0;
         margin-top: 10px;
@@ -57,6 +49,14 @@ article {
     main h2 {
         margin-top: 5px;
         margin-bottom: 0;
+    }
+}
+
+.author {
+    float: right;
+
+    img {
+        border-radius: 50%;
     }
 }
 
@@ -119,15 +119,16 @@ aside {
     font-weight: bolder;
 }
 
-.comments {
+.comments,
+.mentions {
     padding-top: 10px;
-    border-top: 1px solid;
 
     h4 {
         margin-top: 0;
     }
 
-    .comment {
+    .comment,
+    .mention {
         overflow: auto;
         margin-bottom: 10px;
     }
@@ -176,14 +177,19 @@ nav {
 }
 
 a[href^='mailto']::before {
-  content: none;
+    content: none;
 }
 
 footer {
     color: var(--text-main);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 100;
 }
 
@@ -196,6 +202,10 @@ h2 {
     font-size: 1.5rem;
 }
 
+h3 {
+    margin: 0;
+}
+
 @media screen and (min-width: 35.5em) {
     aside {
         text-align: right;
@@ -206,6 +216,11 @@ h2 {
         time {
             line-height: 44px;
         }
+    }
+
+    .comments aside time,
+    .mentions aside time {
+        line-height: inherit;
     }
 
     main {
@@ -251,5 +266,16 @@ h2 {
 
     h2 {
         font-size: 2rem;
+    }
+
+    article .author {
+        position: relative;
+        top: 16px;
+    }
+
+    .comments .author,
+    .mentions .author {
+        position: relative;
+        top: 0;
     }
 }

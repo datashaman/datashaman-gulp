@@ -12,7 +12,7 @@
         </aside>
 
         <main>
-            <div class="u-author h-card">
+            <div class="author u-author h-card">
                 <a class="u-url" href="{{ author.link }}"><img class="u-photo p-name" alt="Marlin Forbes" src="{{ author.gravatar}}" width="32" height="32"></a>
             </div>
 
@@ -27,7 +27,48 @@
         </main>
     </article>
 
-    {% if file.data.comments %}
+    {% if file.data.mentions.length %}
+        <header>
+            <aside>
+            </aside>
+            <main>
+                <h3>Mentions</h3>
+            </main>
+        </header>
+        <section class="mentions">
+            {% for mention in file.data.mentions %}
+                <div class="mention">
+                    <aside>
+                        <time>{{ mention.published|date }}</time>
+                    </aside>
+                    <main>
+                        <div class="author">
+                            <a href="{{ mention.author.url }}" target="_blank" rel="noopener noreferrer"><img alt="{{ mention.author.name}}" src="{{ mention.author.photo }}" width="32" height="32"></a>
+                        </div>
+
+                        <h4>
+                            <a href="{{ mention.url }}" target="_blank" rel="noopener noreferrer">{{ mention.author.name }}</a>
+                        </h4>
+
+                        {% if mention.content.html %}
+                            {{ mention.content.html|safe }}
+                        {% else %}
+                            {{ mention.content.text }}
+                        {% endif %}
+                    </main>
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    {% if file.data.comments.length %}
+        <header>
+            <aside>
+            </aside>
+            <main>
+                <h3>Comments</h3>
+            </main>
+        </header>
         <section class="comments">
             {% for comment in file.data.comments %}
                 <div class="comment">
@@ -36,7 +77,7 @@
                     </aside>
                     <main>
                         <h4>
-                            <a href="{{ comment.link }}" rel="noopener noreferer" target="_blank">{{ comment.name }}</a>
+                            <a href="{{ comment.link }}" target="_blank" rel="noopener noreferer">{{ comment.name }}</a>
                         </h4>
 
                         {{ comment.text }}

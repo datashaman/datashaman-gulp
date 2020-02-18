@@ -1,0 +1,7 @@
+{
+    "build": {
+        "env": {
+            "WEBMENTION_TOKEN": "@webmention-name"
+        }
+    }
+}
