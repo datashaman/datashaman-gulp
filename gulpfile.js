@@ -93,6 +93,7 @@ const mentions = cb => {
     got(url)
         .then(response => {
             responseMentions = JSON.parse(response.body)
+            log(responseMentions)
 
             if (mentions) {
                 mentions.children = mentions.children.concat(
