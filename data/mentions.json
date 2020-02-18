@@ -90,6 +90,28 @@
             "in-reply-to": "https://datashaman.com/2019/12/17/coming-soon/",
             "wm-property": "in-reply-to",
             "wm-private": false
+        },
+        {
+            "type": "entry",
+            "author": {
+                "type": "card",
+                "name": "AE",
+                "photo": "https://webmention.io/avatar/pbs.twimg.com/b79aa3d8a22e9ce4602240c8a1b14d853a99751e970aa363004a4c60c87963ee.jpg",
+                "url": "https://twitter.com/uberEllis"
+            },
+            "url": "https://twitter.com/uberEllis/status/1229666091041009664",
+            "published": "2020-02-18T07:16:56+00:00",
+            "wm-received": "2020-02-18T07:20:26Z",
+            "wm-id": 757553,
+            "wm-source": "https://brid-gy.appspot.com/comment/twitter/data_shaman/1229660275105837056/1229666091041009664",
+            "wm-target": "https://datashaman.com/2019/12/17/coming-soon/",
+            "content": {
+                "html": "If you can read this, it works\n<a class=\"u-mention\" href=\"https://datashaman.com/\"></a>\n<a class=\"u-mention\" href=\"https://twitter.com/data_shaman\"></a>",
+                "text": "If you can read this, it works"
+            },
+            "in-reply-to": "https://datashaman.com/2019/12/17/coming-soon/",
+            "wm-property": "in-reply-to",
+            "wm-private": false
         }
     ]
 }

@@ -84,10 +84,10 @@ const mentions = cb => {
         ? JSON.parse(fs.readFileSync(filename))
         : null
 
-    let since = mentions ? collect(mentions.children).max('wm-id') : null
+    let sinceId = mentions ? collect(mentions.children).max('wm-id') : null
 
-    if (since) {
-        url += `&since=${since}`
+    if (sinceId) {
+        url += `&since_id=${sinceId}`
     }
 
     got(url)
