@@ -117,7 +117,7 @@ const documents = () => {
     let feed = []
     let mentions = collect(
         JSON.parse(fs.readFileSync('./data/mentions.json')).children
-    )
+    ).sortByDesc(child => child.published)
     let tags = {}
     let urls = []
 
