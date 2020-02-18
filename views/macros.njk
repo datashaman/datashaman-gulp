@@ -1,21 +1,25 @@
 {% macro render_posts(posts, base = '', pagination = true) %}
 {% for id in posts.items %}
     {% set post = document(id) %}
-    <article>
+    <article class="h-entry">
         <aside>
             <a href="{{ post.data.url }}">
-                <time>{{ post.data.date|date }}</time>
+                <time class="dt-published">{{ post.data.date|date }}</time>
             </a>
         </aside>
         <main>
             <h2>
-                <a href="{{ post.data.url }}">{{ post.data.title }}</a>
+                <a href="{{ post.data.url }}" class="p-name u-url">{{ post.data.title }}</a>
             </h2>
 
             {% if post.data.excerpt %}
-                {% markdown %}{{ post.data.excerpt }}{% endmarkdown %}
+                <div class="p-summary">
+                    {% markdown %}{{ post.data.excerpt }}{% endmarkdown %}
+                </div>
             {% else %}
-                {{ post.contents|safe }}
+                <div class="e-content">
+                    {{ post.contents|safe }}
+                </div>
             {% endif %}
 
             <div class="pure-g">

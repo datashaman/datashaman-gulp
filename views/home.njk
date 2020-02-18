@@ -1,8 +1,10 @@
 {% extends 'default.njk' %}
-{% from 'macros.njk' import render_posts %} 
+{% from 'macros.njk' import render_posts %}
+
+{% set bodyClass = 'h-feed' %}
 
 {% block content %}
-    <header class="h-card">
+    <header class="p-author h-card">
         <aside>
             <img class="gravatar u-photo" height="80" width="80" alt="Marlin Forbes" src="{{ author.gravatar }}"/>
         </aside>
