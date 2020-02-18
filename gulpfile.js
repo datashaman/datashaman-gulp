@@ -12,6 +12,7 @@ const gulpIf = require('gulp-if')
 const log = require('fancy-log')
 const more = require('./lib/gulp/more')
 const nunjucks = require('./lib/nunjucks')
+const path = require('path')
 const plugins = require('gulp-load-plugins')()
 const postDates = require('./lib/gulp/post-dates')
 const sink = require('lead')
@@ -46,7 +47,7 @@ function paginate(arr, perPage) {
 }
 
 const clean = () => {
-    return del(['./build', './documents.yml'])
+    return del(['./build', './data/documents.yml'])
 }
 
 const scripts = () => {
@@ -75,16 +76,33 @@ const styles = () => {
 }
 
 const mentions = cb => {
+    const filename = './data/mentions.json'
     const token = process.env.WEBMENTION_TOKEN
-    const url = `https://webmention.io/api/mentions.jf2?domain=${nunjucks.site.domain}&token=${token}`
+    let url = `https://webmention.io/api/mentions.jf2?domain=${nunjucks.site.domain}&token=${token}`
+
+    let mentions = fs.existsSync(filename)
+        ? JSON.parse(fs.readFileSync(filename))
+        : null
+
+    let since = mentions ? collect(mentions.children).max('wm-id') : null
+
+    if (since) {
+        url += `&since=${since}`
+    }
 
     got(url)
         .then(response => {
-            fs.writeFile(
-                'mentions.json',
-                JSON.stringify(JSON.parse(response.body), null, 2),
-                cb
-            )
+            responseMentions = JSON.parse(response.body)
+
+            if (mentions) {
+                mentions.children = mentions.children.concat(
+                    responseMentions.children
+                )
+            } else {
+                mentions = responseMentions
+            }
+
+            fs.writeFile(filename, JSON.stringify(mentions, null, 2), cb)
         })
         .catch(error => {
             throw error
@@ -98,7 +116,7 @@ const documents = () => {
     let documents = {}
     let feed = []
     let mentions = collect(
-        JSON.parse(fs.readFileSync('./mentions.json')).children
+        JSON.parse(fs.readFileSync('./data/mentions.json')).children
     )
     let tags = {}
     let urls = []
@@ -332,7 +350,7 @@ const documents = () => {
                         }
 
                         const contents = yaml.dump(documents)
-                        fs.writeFile('./documents.yml', contents, cb)
+                        fs.writeFile('./data/documents.yml', contents, cb)
                     }
                 )
             )
@@ -341,7 +359,7 @@ const documents = () => {
 
 const generateDocuments = () => {
     return gulp
-        .src('./documents.yml')
+        .src('./data/documents.yml')
         .pipe(generate())
         .pipe(
             gulpIf(file => {

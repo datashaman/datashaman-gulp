@@ -1,6 +1,5 @@
 /build/
-/documents.yml
+/data/documents.yml
 /.env
 /node_modules/
-
-.now
+/.now/
