@@ -93,7 +93,6 @@ const mentions = cb => {
     got(url)
         .then(response => {
             responseMentions = JSON.parse(response.body)
-            log(responseMentions)
 
             if (mentions) {
                 mentions.children = mentions.children.concat(
@@ -394,7 +393,7 @@ const watch = cb => {
     const watchPaths = ['./views/**/*.njk'].concat(paths.documents)
     gulp.watch(
         watchPaths,
-        gulp.series(clean, styles, documents, mentions, generateDocuments)
+        gulp.series(clean, styles, mentions, documents, generateDocuments)
     ).on('change', browserSync.reload)
 
     cb()
@@ -403,8 +402,8 @@ const watch = cb => {
 exports.build = gulp.series(
     clean,
     styles,
-    documents,
     mentions,
+    documents,
     generateDocuments
 )
 exports.documents = documents
