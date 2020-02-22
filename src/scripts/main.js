@@ -14,6 +14,9 @@ function ready(callback) {
 ready(function() {
     document.querySelectorAll('time[datetime]').forEach(function(el) {
         var time = new Date(el.getAttribute('datetime'))
-        el.innerText = time.toLocaleString()
+        el.innerText = time.toLocaleString('en-ZA', {
+            dateStyle: 'short',
+            timeStyle: 'short',
+        })
     })
 })
