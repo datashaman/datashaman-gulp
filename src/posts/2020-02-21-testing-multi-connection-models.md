@@ -133,6 +133,6 @@ If we put literal strings into the code it'll be clearer:
         return 'testing';
     }
 
-Notice how the parameter _name_ is ignored, and the _testing_ connection is returned? The second method changes the default connection to _testing_ to ensure anyone asking gets the required connection.
+Notice how the parameter _name_ is ignored, and the _testing_ connection is returned from the original connection resolver? The second method changes the default connection to _testing_ to ensure anyone asking gets the required connection.
 
 _Happy Testing!_
