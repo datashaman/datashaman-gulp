@@ -10,6 +10,7 @@ const got = require('got')
 const gulp = require('gulp')
 const gulpIf = require('gulp-if')
 const log = require('fancy-log')
+const metadata = require('./lib/metadata')
 const more = require('./lib/gulp/more')
 const nunjucks = require('./lib/nunjucks')
 const path = require('path')
@@ -78,7 +79,7 @@ const styles = () => {
 const mentions = cb => {
     const filename = './data/mentions.json'
     const token = process.env.WEBMENTION_TOKEN
-    let url = `https://webmention.io/api/mentions.jf2?domain=${nunjucks.site.domain}&token=${token}`
+    let url = `https://webmention.io/api/mentions.jf2?domain=${metadata.site.domain}&token=${token}`
 
     let mentions = fs.existsSync(filename)
         ? JSON.parse(fs.readFileSync(filename))
@@ -174,7 +175,7 @@ const documents = () => {
                                 priority: '0.6000',
                             })
 
-                            const url = `${nunjucks.site.link}${file.data.url}`
+                            const url = `${metadata.site.link}${file.data.url}`
 
                             file.data.mentions = mentions
                                 .where('wm-target', url)

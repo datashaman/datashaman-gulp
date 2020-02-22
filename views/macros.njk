@@ -1,6 +1,7 @@
 {% macro render_posts(posts, base = '', pagination = true) %}
 {% for id in posts.items %}
     {% set post = document(id) %}
+    {% if site.drafts or not post.data.draft %}
     <article class="h-entry">
         <aside>
             <a href="{{ post.data.url }}">
@@ -18,7 +19,7 @@
                 </div>
             {% else %}
                 <div class="e-content">
-                    {{ post.contents|safe }}
+                    {% markdown %}{{ post.contents }}{% endmarkdown %}
                 </div>
             {% endif %}
 
@@ -35,6 +36,7 @@
             </div>
         </main>
     </article>
+    {% endif %}
 {% endfor %}
 
 {% if posts.lastPage > 1 %}

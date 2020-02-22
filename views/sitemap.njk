@@ -6,11 +6,13 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 {% for url in urls %}
     {% set entry = document(url.id) %}
+    {% if not entry.data.draft %}
     <url>
     <loc>{{ site.link }}{{ entry.data.url }}</loc>
         <lastmod>{{ entry.data.date|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</lastmod>
         <changefreq>{{ url.changefreq|default('daily') }}</changefreq>
         <priority>{{ url.priority|default('1.000') }}</priority>
     </url>
-    {% endfor %}
+    {% endif %}
+{% endfor %}
 </urlset>
