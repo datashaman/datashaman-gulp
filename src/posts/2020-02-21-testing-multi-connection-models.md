@@ -57,9 +57,9 @@ Put the following code into _tests/ConnectionResolver.php_:
         }
     }
 
-Setup your test as follows:
+Setup your test as follows in _tests/Unit/ExampleTest.php_:
 
-    namespace Tests;
+    namespace Tests\Unit;
 
     use App\User;
     use Tests\ConnectionResolver;
