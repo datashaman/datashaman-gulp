@@ -1,7 +1,8 @@
 {% extends 'default.njk' %}
 {% from 'macros.njk' import render_tags %}
 
-{% set description = file.data.excerpt %}
+{% set canonical = site.link + file.data.url %}
+{% set description = marked(file.data.excerpt|default('')) %}
 
 {% block content %}
     <article class="h-entry">
@@ -20,9 +21,23 @@
 
             <div class="e-content">{{ contents|safe }}</div>
 
-            {% if file.data.tags %}
-                {{ render_tags(file.data.tags) }}
-            {% endif %}
+            <div class="pure-g">
+                <div class="pure-u-1-6">
+                    <div class="social-share">
+                        <a
+                            class="twitter-share-button"
+                            data-size="large"
+                            href="https://twitter.com/intent/tweet?text={{ file.data.title|urlencode }}&hashtags={{ file.data.tags|default([])|join(',')|urlencode }}">
+                            Tweet
+                        </a>
+                    </div>
+                </div>
+
+                <div class="pure-u-5-6">
+                    {% if file.data.tags %}
+                        {{ render_tags(file.data.tags) }}
+                    {% endif %}
+                </div>
             </div>
         </main>
     </article>

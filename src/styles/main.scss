@@ -118,14 +118,13 @@ aside {
 }
 
 .view--post .tags {
-    margin-top: 10px;
 }
 
 .button-tag {
     background: #0076d1;
     border-radius: 10%;
     color: #fff;
-    font-size: x-small;
+    font-size: 0.8em;
     font-weight: bolder;
 }
 
@@ -261,6 +260,10 @@ h3 {
     .tags {
         margin-top: 0;
         text-align: right;
+    }
+
+    .view--post .tags {
+        margin-top: 0;
     }
 
     .button-tag,
