@@ -1,7 +1,7 @@
 ---
 id: 86c010a3-a527-45cb-8974-18470b5222b8
 title: Get URL Parameters in Javascript
-date: 2007-03-30 12:00:00
+date: 2007-03-30 12:00:00+02:00
 redirects:
     - /blog/2007/03/30/get-url-parameters-in-javascript/
 view: post
@@ -13,18 +13,19 @@ comments:
       link: http://www.theglasspeople.net/
       date: 2007-06-26 15:37
       text: |
-        Great little script. I am using it and it works very very well!
-        It would be uber cool if you could add a link to a plain text version of these functions so that users didn’t have to convert over illegal characters.
+          Great little script. I am using it and it works very very well!
+          It would be uber cool if you could add a link to a plain text version of these functions so that users didn’t have to convert over illegal characters.
 
-        Fantastic job! You saved me some time.
+          Fantastic job! You saved me some time.
     - name: DataShaman
       link: https://datashaman.com
       date: 2006-06-26 21:07
       text: |
-        Thanks! Glad you liked it. :)
+          Thanks! Glad you liked it. :)
 
-        It’s not very obvious that it’s a link, but if you click on the PLAIN TEXT heading above each code block, it converts the block to text, for easy copy and pasting. 
+          It’s not very obvious that it’s a link, but if you click on the PLAIN TEXT heading above each code block, it converts the block to text, for easy copy and pasting.
 ---
+
 I needed a _Javascript_ function which would give me access to the URL querystring, much like PHP's `$_GET` associative array. Unfortunately most of the solutions I found were either wrong, incomplete or badly written. IMHO. :)
 
 So, being a programmer, I decided to knock up my own version of the script.<!--more-->
@@ -44,7 +45,7 @@ I'm surprised that the _DOM_ standard hasn't given us an easy way of accessing t
      * and GPL
      * (http://www.opensource.org/licenses/gpl-license.php) licenses.
      */
-     
+
     /**
      * Creates an object property window.location.parameters which
      * is an associative array of the URL querystring parameters used
@@ -82,13 +83,13 @@ For a lazy loading getParameter function, you could do this:
 
 The way it works is as follows:
 
-* All query parameters are decoded, so any entity references, `%20` and `+` symbols are converted to their human versions
-* If a query parameter does not have a value such as the parameter flag in:
+-   All query parameters are decoded, so any entity references, `%20` and `+` symbols are converted to their human versions
+-   If a query parameter does not have a value such as the parameter flag in:
 
-      http://example.com/page.php?flag
+        http://example.com/page.php?flag
 
-  then the `window.location.parameter['flag']` will return `null`
+    then the `window.location.parameter['flag']` will return `null`
 
-*  If a query parameter is not defined, then it will follow the usual _JavaScript_ convention and return `undefined`
+-   If a query parameter is not defined, then it will follow the usual _JavaScript_ convention and return `undefined`
 
 I think this covers most situations. I'm not 100% certain that the regular expression replacement of all + signs with spaces is correct, there seems to be some ambiguity about what to do with + signs. None of the supplied native decode functions decode them to spaces. Let me know if you have any answers on that one.

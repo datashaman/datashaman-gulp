@@ -1,13 +1,14 @@
 ---
 id: c943f5d7-702f-4405-9c22-8ef12817f98b
 title: Cumulative Filter Object
-date: 2014-01-26 12:00:00
+date: 2014-01-26 12:00:00+02:00
 view: post
 tags:
     - dev
     - coffeescript
     - javascript
 ---
+
 I've created a cumulative object in coffeescript, useful for creating filters.
 
 It's closest to a Reader / Environment monad.
