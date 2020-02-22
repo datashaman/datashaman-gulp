@@ -25,10 +25,11 @@
                 <div class="pure-u-1-6">
                     <div class="social-share">
                         <a
-                            class="twitter-share-button"
-                            data-size="large"
-                            href="https://twitter.com/intent/tweet?text={{ file.data.title|urlencode }}&hashtags={{ file.data.tags|default([])|join(',')|urlencode }}">
-                            Tweet
+                            class="button-tag pure-button twitter"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href="https://twitter.com/intent/tweet?text={{ file.data.title|urlencode }}&amp;url={{ canonical|urlencode }}&amp;hashtags={{ file.data.tags|default([])|join(',')|urlencode }}&amp;via={{ author.twitter|urlencode }}">
+                            {{ feather('twitter', 14, 14, 3)|safe }} tweet
                         </a>
                     </div>
                 </div>
