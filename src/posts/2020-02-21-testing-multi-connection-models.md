@@ -89,7 +89,7 @@ Setup your test as follows in _tests/Unit/ExampleTest.php_:
         }
     }
 
-In the first 2 lines we create a user in the _testing_ database using a database factory and we assert that it exists:
+In the first few lines we create a user in the _testing_ database using a database factory and we assert that it exists:
 
     $user = factory(User::class)
         ->connection('testing')
