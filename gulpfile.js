@@ -36,6 +36,10 @@ function paginate(arr, perPage) {
     const pages = []
     const total = arr.length
 
+    if (!metadata.site.drafts) {
+        arr = arr.filter(post => post.draft !== true)
+    }
+
     while (arr.length) {
         pages.push(arr.splice(0, perPage))
     }
