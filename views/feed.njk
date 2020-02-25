@@ -1,37 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-<title>{{ site.title }}</title>
-<subtitle>{{ site.subtitle }}</subtitle>
-<link href="{{ site.link }}/feed.xml" rel="self" />
-<link href="{{ site.link }}/" />
-<id>urn:uuid:{{ site.id }}</id>
-<updated>{{ document(entries[0]).data.date|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</updated>
+    <title>{{ site.title }}</title>
+    <subtitle>{{ site.subtitle }}</subtitle>
+    <link href="{{ site.link }}/feed.xml" rel="self" />
+    <link href="{{ site.link }}/" />
+    <id>urn:uuid:{{ site.id }}</id>
+    <updated>{{ document(entries[0]).data.published|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</updated>
+    <author>
+        <name>{{ author.name }}</name>
+        <uri>{{ author.url }}</uri>
+        <email>{{ author.email }}</email>
+    </author>
 
-{% for id in entries %}
-    {% set entry = document(id) %}
-    {% if not entry.data.draft %}
-    <entry>
-        <title>{{ entry.data.title }}</title>
-        <link href="{{ site.link }}{{ entry.data.url }}" />
-        <id>urn:uuid:{{ entry.data.id }}</id>
-        <updated>{{ entry.data.date|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</updated>
-        {% if entry.data.excerpt %}
-            <summary type="xhtml" xml:lang="en">
-                <div xmlns="http://www.w3.org/1999/xhtml">
-                    {% markdown %}{{ entry.data.excerpt }}{% endmarkdown %}
-                </div>
-            </summary>
+    {% for uid in entries %}
+        {% set entry = document(uid) %}
+        {% if not entry.data.draft %}
+            <entry>
+                {% if entry.data.name %}
+                    <title>{{ entry.data.name }}</title>
+                {% endif %}
+                <link href="{{ site.link }}{{ entry.data.url }}" />
+                <id>urn:uuid:{{ entry.data.uid }}</id>
+                <published>{{ entry.data.published|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</published>
+                {% if entry.data.updated %}
+                    <updated>{{ entry.data.updated|date('YYYY-MM-DDTHH:mm:ss[Z]') }}</updated>
+                {% endif %}
+                {% if entry.data.summary %}
+                    <summary type="xhtml" xml:lang="en">
+                        <div xmlns="http://www.w3.org/1999/xhtml">
+                            {% markdown %}{{ entry.data.summary }}{% endmarkdown %}
+                        </div>
+                    </summary>
+                {% endif %}
+
+                {% if entry.contents.length %}
+                    <content type="xhtml" xml:lang="en">
+                        <div xmlns="http://www.w3.org/1999/xhtml">
+                            {{ entry.contents }}
+                        </div>
+                    </content>
+                {% elif entry.data.content and entry.data.content.html %}
+                    <content type="xhtml" xml:lang="en">
+                        <div xmlns="http://www.w3.org/1999/xhtml">
+                            {{ entry.data.content.html }}
+                        </div>
+                    </content>
+                {% elif entry.data.content and entry.data.content.text %}
+                    <content type="text">
+                        {{ entry.data.content.text }}
+                    </content>
+                {% else %}
+                    <content type="text">
+                        {{ entry.data.content }}
+                    </content>
+                {% endif %}
+
+                {% if entry.data.author %}
+                    {% set entryAuthor = entry.data.references[entry.data.author] or entry.data.author %}
+                    <author>
+                        <name>{{ entryAuthor.name }}</name>
+                        {% if entryAuthor.url %}
+                            <uri>{{ entryAuthor.url }}</uri>
+                        {% endif %}
+                        <email>{{ entryAuthor.email }}</email>
+                    </author>
+                {% endif %}
+            </entry>
         {% endif %}
-        <content type="xhtml" xml:lang="en">
-            <div xmlns="http://www.w3.org/1999/xhtml">
-                {% markdown %}{{ entry.contents }}{% endmarkdown %}
-            </div>
-        </content>
-        <author>
-            <name>{{ author.name }}</name>
-            <email>{{ author.email }}</email>
-        </author>
-    </entry>
-    {% endif %}
-{% endfor %}
+    {% endfor %}
 </feed>

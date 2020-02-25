@@ -1,25 +1,32 @@
 {% extends 'default.njk' %}
-{% from 'macros.njk' import render_tags %}
+{% from 'macros.njk' import render_content, render_tags %}
 
+{% set author = file.data.references[file.data.author] or file.data.author or author %}
 {% set canonical = site.link + file.data.url %}
-{% set description = marked(file.data.excerpt|default('')) %}
+{% set description = marked(file.data.summary|default('')) %}
 
 {% block content %}
     <article class="h-entry">
         <aside>
-            <a href="{{ file.data.url }}" class="u-url">
-                <time class="dt-published" datetime="{{ file.data.date|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ file.data.date|date }}</time>
-            </a>
+            <p>
+                <a href="{{ file.data.url }}" class="u-url">
+                    <time class="dt-published" datetime="{{ file.data.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ file.data.published|date }}</time>
+                </a>
+            </p>
         </aside>
 
         <main>
             <div class="author u-author h-card">
-                <a class="u-url" href="{{ author.link }}"><img class="u-photo p-name" alt="Marlin Forbes" src="{{ author.gravatar}}" width="32" height="32"></a>
+                <a class="u-url" href="{{ author.url }}" title="{{ author.name }}">
+                    <img class="u-photo p-name" alt="{{ author.name }}" src="{{ author.photo }}" width="32" height="32">
+                </a>
             </div>
 
-            <h2 class="p-name">{{ file.data.title }}</h2>
+            {% if file.data.name %}
+                <h2 class="p-name">{{ file.data.name }}</h2>
+            {% endif %}
 
-            <div class="e-content">{{ contents|safe }}</div>
+            {{ render_content(file) }}
 
             <div class="pure-g">
                 <div class="pure-u-1-6">
@@ -28,15 +35,15 @@
                             class="button-tag pure-button twitter"
                             target="_blank"
                             rel="noopener noreferrer"
-                            href="https://twitter.com/intent/tweet?text={{ file.data.title|urlencode }}&amp;url={{ canonical|urlencode }}&amp;hashtags={{ file.data.tags|default([])|join(',')|urlencode }}&amp;via={{ author.twitter|urlencode }}">
+                            href="https://twitter.com/intent/tweet?text={{ file.data.name|urlencode }}&amp;url={{ canonical|urlencode }}&amp;hashtags={{ file.data.category|default([])|join(',')|urlencode }}&amp;via={{ author.twitter|urlencode }}">
                             {{ feather('twitter', 14, 14, 3)|safe }} tweet
                         </a>
                     </div>
                 </div>
 
                 <div class="pure-u-5-6">
-                    {% if file.data.tags %}
-                        {{ render_tags(file.data.tags) }}
+                    {% if file.data.category %}
+                        {{ render_tags(file.data.category) }}
                     {% endif %}
                 </div>
             </div>
@@ -55,7 +62,9 @@
             {% for mention in file.data.mentions %}
                 <div class="mention">
                     <aside>
-                        <time>{{ mention.published|date }}</time>
+                        <p>
+                            <time datetime="{{ mention.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ mention.published|date }}</time>
+                        </p>
                     </aside>
                     <main>
                         <div class="author">
@@ -89,7 +98,9 @@
             {% for comment in file.data.comments %}
                 <div class="comment">
                     <aside>
-                        <time>{{ comment.date|date }}</time>
+                        <p>
+                            <time datetime="{{ comment.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ comment.published|date }}</time>
+                        </p>
                     </aside>
                     <main>
                         <h4>

@@ -18,9 +18,9 @@ const plugins = require('gulp-load-plugins')()
 const postDates = require('./lib/gulp/post-dates')
 const sink = require('lead')
 const through = require('through2')
-const uniqid = require('uniqid')
 const webpack = require('webpack-stream')
 const yaml = require('js-yaml')
+const {v1: uuidv1} = require('uuid')
 
 const paths = {
     documents: ['./src/**/*.md'],
@@ -149,33 +149,40 @@ const documents = () => {
             sink(
                 through.obj(
                     (file, encoding, cb) => {
-                        id = uniqid()
+                        uid = uuidv1()
 
-                        const fileTags = file.data.tags || []
-
-                        if (file.data.tag) {
-                            fileTags.push(file.data.tag)
-                            delete file.data.tag
+                        if (!file.data.category) {
+                            file.data.category = []
                         }
 
-                        if (file.data.date) {
-                            file.data.date = new Date(file.data.date)
+                        if (!Array.isArray(file.data.category)) {
+                            file.data.category = [file.data.category]
                         }
 
-                        if (file.data.view === 'page') {
+                        file.data.category = file.data.category.map(category =>
+                            category.toLowerCase()
+                        )
+
+                        if (file.data.published) {
+                            file.data.published = new Date(file.data.published)
+                        } else {
+                            file.data.published = new Date()
+                        }
+
+                        if (file.data.type === 'page') {
                             urls.push({
-                                id,
+                                uid,
                                 priority: '0.8000',
                             })
                         }
 
-                        if (file.data.view === 'post') {
+                        if (file.data.type === 'entry') {
                             feed.push({
-                                id,
-                                date: file.data.date,
+                                uid,
+                                published: file.data.published,
                             })
                             urls.push({
-                                id,
+                                uid,
                                 priority: '0.6000',
                             })
 
@@ -186,22 +193,22 @@ const documents = () => {
                                 .all()
                         }
 
-                        documents[id] = {
-                            id,
+                        documents[uid] = {
+                            uid,
                             extname: file.extname,
                             path: file.path.replace(file.base + '/', ''),
                             data: file.data,
-                            contents: file.contents.toString(),
+                            contents: file.contents.toString().trim(),
                         }
 
-                        fileTags.forEach(tag => {
+                        file.data.category.forEach(tag => {
                             if (typeof tags[tag] === 'undefined') {
                                 tags[tag] = []
                             }
 
                             tags[tag].push({
-                                date: file.data.date,
-                                id,
+                                published: file.data.published,
+                                uid,
                             })
                         })
 
@@ -209,17 +216,17 @@ const documents = () => {
                     },
                     function(cb) {
                         Object.keys(tags).forEach(tag => {
-                            tags[tag].sort((a, b) => b.date - a.date)
+                            tags[tag].sort((a, b) => b.published - a.published)
                             let pagination = paginate(
-                                tags[tag].map(defn => defn.id),
+                                tags[tag].map(defn => defn.uid),
                                 PAGE_LIMIT
                             )
 
                             pagination.pages.forEach((page, index) => {
-                                const pageId = uniqid()
+                                const pageUid = uuidv1()
 
-                                documents[pageId] = {
-                                    id: pageId,
+                                documents[pageUid] = {
+                                    uid: pageUid,
                                     extname: '.md',
                                     path: index
                                         ? `tags/${tag}/page/${index +
@@ -238,19 +245,19 @@ const documents = () => {
                                         url: index
                                             ? `/${tag}/page/${index + 1}/`
                                             : `/${tag}/`,
-                                        view: 'tag',
+                                        type: 'tag',
                                     },
                                     contents: '',
                                 }
 
                                 urls.push({
-                                    id: pageId,
+                                    uid: pageUid,
                                     priority: '0.7000',
                                 })
                             })
 
                             pagination = paginate(
-                                tags[tag].map(defn => defn.id),
+                                tags[tag].map(defn => defn.uid),
                                 TAGS_LIMIT
                             )
 
@@ -261,7 +268,7 @@ const documents = () => {
                             }
                         })
 
-                        let pageId = uniqid()
+                        let pageUid = uuidv1()
 
                         tags = Object.keys(tags)
                             .sort()
@@ -271,38 +278,38 @@ const documents = () => {
                                 return acc
                             }, {})
 
-                        documents[pageId] = {
-                            id: pageId,
+                        documents[pageUid] = {
+                            uid: pageUid,
                             extname: '.md',
                             path: 'tags/index.md',
                             data: {
                                 tags,
                                 title: 'Tags',
                                 url: '/tags/',
-                                view: 'tags',
+                                type: 'tags',
                             },
                             contents: '',
                         }
 
                         urls.push({
-                            id: pageId,
+                            uid: pageUid,
                             priority: '0.8000',
                         })
 
                         feed = feed
-                            .sort((a, b) => b.date - a.date)
-                            .map(post => post.id)
+                            .sort((a, b) => b.published - a.published)
+                            .map(post => post.uid)
 
-                        pageId = uniqid()
+                        pageUid = uuidv1()
 
-                        documents[pageId] = {
-                            id: pageId,
+                        documents[pageUid] = {
+                            uid: pageUid,
                             extname: '.xml',
                             path: 'feed.xml',
                             data: {
                                 entries: feed.slice(0, FEED_LIMIT),
                                 url: '/feed.xml',
-                                view: 'feed',
+                                type: 'feed',
                             },
                             contents: '',
                         }
@@ -310,10 +317,10 @@ const documents = () => {
                         const pagination = paginate(feed, PAGE_LIMIT)
 
                         pagination.pages.forEach((page, index) => {
-                            const pageId = uniqid()
+                            const pageUid = uuidv1()
 
-                            documents[pageId] = {
-                                id: pageId,
+                            documents[pageUid] = {
+                                uid: pageUid,
                                 extname: '.md',
                                 path: index
                                     ? `page/${index + 1}/index.md`
@@ -328,28 +335,28 @@ const documents = () => {
                                     },
                                     title: index ? `Page ${index + 1}` : '',
                                     url: index ? `/page/${index + 1}/` : '/',
-                                    view: 'home',
+                                    type: 'home',
                                 },
                                 contents: '',
                             }
 
                             if (!index) {
                                 urls.push({
-                                    id: pageId,
+                                    uid: pageUid,
                                 })
                             }
                         })
 
-                        pageId = uniqid()
+                        pageUid = uuidv1()
 
-                        documents[pageId] = {
-                            id: pageId,
+                        documents[pageUid] = {
+                            uid: pageUid,
                             extname: '.xml',
                             path: 'sitemap.xml',
                             data: {
                                 urls,
                                 url: '/sitemap.xml',
-                                view: 'sitemap',
+                                type: 'sitemap',
                             },
                             contents: '',
                         }
@@ -375,7 +382,7 @@ const generateDocuments = () => {
             plugins.wrap(
                 data => {
                     return fs
-                        .readFileSync('./views/' + data.view + '.njk')
+                        .readFileSync('./views/' + data.type + '.njk')
                         .toString()
                 },
                 nunjucks,

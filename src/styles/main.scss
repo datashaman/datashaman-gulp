@@ -31,16 +31,9 @@ a {
     color: #6d6d6d;
 }
 
-p a {
+main p a {
     color: var(--text-bright);
     font-weight: 500;
-}
-
-header,
-article {
-    p {
-        margin-top: 0;
-    }
 }
 
 header.h-card {
@@ -59,7 +52,6 @@ article {
 
     aside {
         margin-bottom: 0;
-        margin-top: 10px;
     }
 
     main h2 {
@@ -80,9 +72,12 @@ aside {
     margin-bottom: 0;
 
     time {
-        font-size: small;
         vertical-align: baseline;
     }
+}
+
+time {
+    font-size: inherit;
 }
 
 header aside,
@@ -141,15 +136,13 @@ aside {
 
 .comments,
 .mentions {
-    padding-top: 10px;
-
     h4 {
         margin-top: 0;
     }
 
     .comment,
     .mention {
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         @extend %clearfix;
     }
 }
@@ -232,10 +225,6 @@ h3 {
         float: left;
         margin-bottom: 0;
         width: 23%;
-
-        time {
-            line-height: 44px;
-        }
     }
 
     .comments aside time,

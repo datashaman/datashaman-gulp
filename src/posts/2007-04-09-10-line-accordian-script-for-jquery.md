@@ -1,11 +1,11 @@
 ---
-id: 832a86d4-789b-4b4a-82d0-ff9cc649dd9a
-view: post
-title: 10 line accordian script for jQuery (or less)
+uid: 832a86d4-789b-4b4a-82d0-ff9cc649dd9a
+type: entry
+name: 10 line accordian script for jQuery (or less)
 redirects:
     - /blog/2007/04/09/10-line-accordian-script-for-jquery/
-date: 2007-04-09 12:00:00+02:00
-tags:
+published: 2007-04-09 12:00:00+02:00
+category:
     - dev
     - javascript
     - jquery
