@@ -60,7 +60,7 @@ article {
     }
 }
 
-.author {
+.icons {
     float: right;
 
     img {
@@ -281,7 +281,7 @@ h3 {
         font-size: 2rem;
     }
 
-    article .author {
+    article .icons {
         position: relative;
         top: 16px;
     }
@@ -291,4 +291,8 @@ h3 {
         position: relative;
         top: 0;
     }
+}
+
+.h-cite .u-photo {
+    margin-top: 10px;
 }
