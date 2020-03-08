@@ -1,9 +1,9 @@
 ---
-id: c943f5d7-702f-4405-9c22-8ef12817f98b
-title: Cumulative Filter Object
-date: 2014-01-26 12:00:00+02:00
-view: post
-tags:
+uid: c943f5d7-702f-4405-9c22-8ef12817f98b
+name: Cumulative Filter Object
+published: 2014-01-26 12:00:00+02:00
+type: entry
+category:
     - dev
     - coffeescript
     - javascript

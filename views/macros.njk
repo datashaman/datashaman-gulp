@@ -1,41 +1,201 @@
+{% macro render_base_content(post, quoted = false) %}
+{% if (post.contents.length or post.data.contents) and quoted %}<blockquote>{% endif %}
+{% if post.contents.length %}
+    <div class="e-content">
+        {{ post.contents|safe }}
+    </div>
+{% elif post.data.content and post.data.content.html %}
+    <div class="e-content">
+        {{ post.data.content.html|safe }}
+    </div>
+{% elif post.data.content and post.data.content.text %}
+    <div class="e-content">
+        {% markdown %}{{ post.data.content.text|urlize|safe }}{% endmarkdown %}
+    </div>
+{% elif post.data.content %}
+    <div class="e-content">
+        {% markdown %}{{ post.data.content|urlize|safe }}{% endmarkdown %}
+    </div>
+{% elif post.data.content %}
+    <div class="e-content">
+        {{ post.data.content }}
+    </div>
+{% endif %}
+{% if (post.contents.length or post.data.contents) and quoted %}</blockquote>{% endif %}
+{% endmacro %}
+
+{% macro render_content(post) %}
+{% set bookmarkOf = post.data.references[post.data['bookmark-of']] or post.data['bookmark-of'] %}
+{% set inReplyTo = post.data.references[post.data['in-reply-to']] or post.data['in-reply-to'] %}
+{% set likeOf = post.data.references[post.data['like-of']] or post.data['like-of'] %}
+{% set repostOf = post.data.references[post.data['repost-of']] or post.data['repost-of'] %}
+{% if bookmarkOf.type %}
+    {{ render_base_content(post) }}
+    <p class="h-cite u-bookmark-of">
+        Bookmarked <a class="u-url" href="{{ bookmarkOf.url }}">{{ bookmarkOf.name }}</a>
+        {% if bookmarkOf.published %}
+            published <time class="dt-published" datetime="{{ bookmarkOf.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ bookmarkOf.published|date }}</time>
+        {% endif %}
+        {% if bookmarkOf.content.html %}
+            <div class="e-content">
+                {{ bookmarkOf.content.html|safe }}
+            </div>
+        {% elif bookmarkOf.content.text %}
+            <div class="e-content">
+                {{ bookmarkOf.content.text|urlize|safe }}
+            </div>
+        {% elif bookmarkOf.content %}
+            <div class="e-content">
+                {{ bookmarkOf.content|urlize|safe }}
+            </div>
+        {% endif %}
+    </p>
+{% elif bookmarkOf %}
+    <p class="h-cite u-bookmark-of">
+        {{ render_base_content(post) }}
+        Bookmarked <a class="u-url" href="{{ bookmarkOf }}">{{ bookmarkOf }}</a>
+    </p>
+{% elif inReplyTo.type %}
+    {{ render_base_content(post) }}
+    <p class="h-cite u-in-reply-to">
+        Replied to <a class="u-url" href="{{ inReplyTo.url }}">{{ inReplyTo.name }}</a>
+        {% if inReplyTo.published %}
+            published <time class="dt-published" datetime="{{ inReplyTo.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ inReplyTo.published|date }}</time>
+        {% endif %}
+        {% if inReplyTo.content.html %}
+            <div class="e-content">
+                {{ inReplyTo.content.html|safe }}
+            </div>
+        {% elif inReplyTo.content.text %}
+            <div class="e-content">
+                {{ inReplyTo.content.text|urlize|safe }}
+            </div>
+        {% elif inReplyTo.content %}
+            <div class="e-content">
+                {{ inReplyTo.content|urlize|safe }}
+            </div>
+        {% endif %}
+    </p>
+{% elif inReplyTo %}
+    <p class="h-cite u-in-reply-to">
+        {{ render_base_content(post) }}
+        Replied to <a class="u-url" href="{{ inReplyTo }}">{{ inReplyTo }}</a>
+    </p>
+{% elif likeOf.type %}
+    <p class="h-cite u-like-of">
+        Liked <a class="u-url" href="{{ likeOf.url }}">{{ likeOf.name }}</a>
+        {% if likeOf.published %}
+            published <time class="dt-published" datetime="{{ likeOf.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ likeOf.published|date }}</time>
+        {% endif %}
+        {% if likeOf.content.html %}
+            <div class="e-content">
+                {{ likeOf.content.html|safe }}
+            </div>
+        {% elif likeOf.content.text %}
+            <div class="e-content">
+                {{ likeOf.content.text|urlize|safe }}
+            </div>
+        {% elif likeOf.content %}
+            <div class="e-content">
+                {{ likeOf.content|urlize|safe }}
+            </div>
+        {% endif %}
+    </p>
+{% elif likeOf %}
+    <p class="h-cite u-like-of">
+        Liked <a class="u-like-of" href="{{ likeOf }}" target="_blank" rel="noopener noreferrer">{{ likeOf }}</a>
+    </p>
+{% elif repostOf.type %}
+    {{ render_base_content(post) }}
+    <p class="h-cite u-repost-of">
+        Reposted <a class="u-url" href="{{ repostOf.url }}">{{ repostOf.name }}</a>
+        {% if repostOf.published %}
+            published <time class="dt-published" datetime="{{ repostOf.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ repostOf.published|date }}</time>
+        {% endif %}
+        {% if repostOf.content.html %}
+            <div class="e-content">
+                {{ repostOf.content.html|safe }}
+            </div>
+        {% elif repostOf.content.text %}
+            <div class="e-content">
+                {{ repostOf.content.text|urlize|safe }}
+            </div>
+        {% elif repostOf.content %}
+            <div class="e-content">
+                {{ repostOf.content|urlize|safe }}
+            </div>
+        {% endif %}
+    </p>
+{% elif repostOf %}
+    <p class="h-cite u-repost-of">
+        {{ render_base_content(post) }}
+        Reposted <a class="u-url" href="{{ repostOf }}">{{ repostOf }}</a>
+    </p>
+{% elif post.data['audio'] %}
+    <p>
+        <audio class="u-audio" controls width="100%">
+            {% for source in post.data['audio'] %}
+                <source src="{{ source.url }}" type="{{ source['content-type'] }}">
+            {% endfor %}
+
+            Sorry your browser does not support embedded audio.
+        </audio>
+    </p>
+{% elif post.data['video'] %}
+    <p>
+        <video class="u-video" controls width="100%">
+            {% for source in post.data['video'] %}
+                <source src="{{ source.url }}" type="{{ source['content-type'] }}">
+            {% endfor %}
+
+            Sorry your browser does not support embedded video.
+        </video>
+    </p>
+{% else %}
+    {{ render_base_content(post) }}
+{% endif %}
+{% endmacro %}
+
 {% macro render_posts(posts, base = '', pagination = true) %}
 {% for id in posts.items %}
     {% set post = document(id) %}
     {% if site.drafts or not post.data.draft %}
-    <article class="h-entry">
-        <aside>
-            <a href="{{ post.data.url }}">
-                <time class="dt-published" datetime="{{ post.data.date|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ post.data.date|date }}</time>
-            </a>
-        </aside>
-        <main>
-            <h2>
-                <a href="{{ post.data.url }}" class="p-name u-url">{{ post.data.title }}</a>
-            </h2>
+        <article class="h-entry">
+            <aside>
+                <p>
+                    <a href="{{ post.data.url }}">
+                        <time class="dt-published" datetime="{{ post.data.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ post.data.published|date }}</time>
+                    </a>
+                </p>
+            </aside>
+            <main>
+                {% if post.data.name %}
+                    <h2>
+                        <a href="{{ post.data.url }}" class="p-name u-url">{{ post.data.name }}</a>
+                    </h2>
+                {% endif %}
 
-            {% if post.data.excerpt %}
-                <div class="p-summary">
-                    {% markdown %}{{ post.data.excerpt }}{% endmarkdown %}
-                </div>
-            {% else %}
-                <div class="e-content">
-                    {% markdown %}{{ post.contents }}{% endmarkdown %}
-                </div>
-            {% endif %}
+                {% if post.data.summary %}
+                    <div class="p-summary">
+                        {% markdown %}{{ post.data.summary }}{% endmarkdown %}
+                    </div>
+                {% else %}
+                    {{ render_content(post) }}
+                {% endif %}
 
-            <div class="pure-g">
-                <div class="pure-u-1-6">
-                    {% if post.data.excerpt %}<a class="button-more pure-button" title="{{ post.data.title }}" href="{{ post.data.url }}">full article</a>{% endif %}
-                </div>
+                <div class="pure-g">
+                    <div class="pure-u-1-6">
+                        {% if post.data.summary %}<a class="button-more pure-button" title="{{ post.data.name }}" href="{{ post.data.url }}">full article</a>{% endif %}
+                    </div>
 
-                <div class="pure-u-5-6">
-                    {% if post.data.tags %}
-                        {{ render_tags(post.data.tags) }}
-                    {% endif %}
+                    <div class="pure-u-5-6">
+                        {% if post.data.category %}
+                            {{ render_tags(post.data.category) }}
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-        </main>
-    </article>
+            </main>
+        </article>
     {% endif %}
 {% endfor %}
 

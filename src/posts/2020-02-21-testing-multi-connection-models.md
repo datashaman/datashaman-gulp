@@ -1,12 +1,12 @@
 ---
-id: 9439a8f9-55de-4e34-9691-9d20a0365c46
-title: Testing multi-connection models
-date: 2020-02-21 13:43:00+0200
-tags:
+uid: 9439a8f9-55de-4e34-9691-9d20a0365c46
+name: Testing multi-connection models
+published: 2020-02-21 13:43:00+0200
+category:
     - dev
     - laravel
     - testing
-view: post
+type: entry
 ---
 
 When testing in _Laravel_ with models that have custom connections set, you need a way to force the connection to one of your choosing for the duration of the test.<!--more-->

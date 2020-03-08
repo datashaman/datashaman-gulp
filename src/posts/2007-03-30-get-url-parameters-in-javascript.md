@@ -1,11 +1,11 @@
 ---
-id: 86c010a3-a527-45cb-8974-18470b5222b8
-title: Get URL Parameters in Javascript
-date: 2007-03-30 12:00:00+02:00
+uid: 86c010a3-a527-45cb-8974-18470b5222b8
+name: Get URL Parameters in Javascript
+published: 2007-03-30 12:00:00+02:00
 redirects:
     - /blog/2007/03/30/get-url-parameters-in-javascript/
-view: post
-tags:
+type: entry
+category:
     - dev
     - javascript
 comments:

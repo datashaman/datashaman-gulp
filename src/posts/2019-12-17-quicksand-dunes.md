@@ -1,9 +1,9 @@
 ---
-id: a214cde4-321a-4b91-8d73-9647f8e19c4b
-title: Quicksand Dunes
-date: 2019-12-17 16:51:00+02:00
-view: post
-tags:
+uid: a214cde4-321a-4b91-8d73-9647f8e19c4b
+name: Quicksand Dunes
+published: 2019-12-17 16:51:00+02:00
+type: entry
+category:
     - improv
     - writing
 redirects:
