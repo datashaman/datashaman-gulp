@@ -2,11 +2,10 @@ require('dotenv').config()
 
 const browserSync = require('browser-sync').create()
 const collect = require('collect.js')
-const compiler = require('webpack')
 const del = require('del')
+const fetch = require('node-fetch')
 const fs = require('fs')
 const generate = require('./lib/gulp/generate')
-const got = require('got')
 const gulp = require('gulp')
 const gulpIf = require('gulp-if')
 const log = require('fancy-log')
@@ -18,7 +17,6 @@ const plugins = require('gulp-load-plugins')()
 const postDates = require('./lib/gulp/post-dates')
 const sink = require('lead')
 const through = require('through2')
-const webpack = require('webpack-stream')
 const yaml = require('js-yaml')
 const {v1: uuidv1} = require('uuid')
 
@@ -56,17 +54,7 @@ const clean = () => {
 }
 
 const scripts = () => {
-    return gulp
-        .src(paths.scripts)
-        .pipe(
-            webpack({
-                mode: process.env.NODE_ENV || 'development',
-                output: {
-                    filename: 'main.js',
-                },
-            })
-        )
-        .pipe(gulp.dest('./build/scripts'))
+    return gulp.src(paths.scripts).pipe(gulp.dest('./build/scripts'))
 }
 
 const styles = () => {
@@ -95,10 +83,16 @@ const mentions = cb => {
         url += `&since_id=${sinceId}`
     }
 
-    got(url)
-        .then(response => {
-            responseMentions = JSON.parse(response.body)
+    fetch(url)
+        .then(res => {
+            if (res.ok) {
+                return res
+            }
 
+            throw Error(res.statusText)
+        })
+        .then(res => res.json())
+        .then(responseMentions => {
             if (mentions) {
                 mentions.children = mentions.children.concat(
                     responseMentions.children
@@ -109,8 +103,10 @@ const mentions = cb => {
 
             fs.writeFile(filename, JSON.stringify(mentions, null, 2), cb)
         })
-        .catch(error => {
-            throw error
+        .catch(err => {
+            log.error(err)
+
+            cb(err, null)
         })
 }
 

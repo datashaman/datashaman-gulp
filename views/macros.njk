@@ -24,114 +24,53 @@
 {% if (post.contents.length or post.data.contents) and quoted %}</blockquote>{% endif %}
 {% endmacro %}
 
+{% macro handle_render_cite(post, type, icon) %}
+{% set reference = post.data.references[post.data[type]] or post.data[type] %}
+{% if reference.type %}
+    <div class="icons">
+        {{ feather(icon, 28, 28)|safe }}
+    </div>
+    {{ render_base_content(post) }}
+    <div class="h-cite u-{{ type }}">
+        <p><a class="u-url" href="{{ reference.url }}">{{ reference.name }}</a></p>
+
+        {% if reference.content.html %}
+            <div class="e-content">
+                {{ reference.content.html|safe }}
+            </div>
+        {% elif reference.content.text %}
+            <div class="e-content">
+                {{ reference.content.text|urlize|safe }}
+            </div>
+        {% elif reference.content %}
+            <div class="e-content">
+                {{ reference.content|urlize|safe }}
+            </div>
+        {% endif %}
+        {% if reference.published %}
+            <time class="dt-published" datetime="{{ reference.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">
+                {{ reference.published|date }}
+            </time>
+        {% endif %}
+        {% if reference.photo %}
+            <img class="u-photo" src="{{ reference.photo }}" width="100%"/>
+        {% endif %}
+    </div>
+{% elif reference %}
+    <p class="h-cite u-{{ type }}">
+        {{ render_base_content(post) }}
+        Bookmarked <a class="u-url" href="{{ reference }}">{{ reference }}</a>
+    </p>
+{% endif %}
+{% endmacro %}
+
 {% macro render_content(post) %}
-{% set bookmarkOf = post.data.references[post.data['bookmark-of']] or post.data['bookmark-of'] %}
-{% set inReplyTo = post.data.references[post.data['in-reply-to']] or post.data['in-reply-to'] %}
-{% set likeOf = post.data.references[post.data['like-of']] or post.data['like-of'] %}
-{% set repostOf = post.data.references[post.data['repost-of']] or post.data['repost-of'] %}
-{% if bookmarkOf.type %}
-    {{ render_base_content(post) }}
-    <p class="h-cite u-bookmark-of">
-        Bookmarked <a class="u-url" href="{{ bookmarkOf.url }}">{{ bookmarkOf.name }}</a>
-        {% if bookmarkOf.published %}
-            published <time class="dt-published" datetime="{{ bookmarkOf.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ bookmarkOf.published|date }}</time>
-        {% endif %}
-        {% if bookmarkOf.content.html %}
-            <div class="e-content">
-                {{ bookmarkOf.content.html|safe }}
-            </div>
-        {% elif bookmarkOf.content.text %}
-            <div class="e-content">
-                {{ bookmarkOf.content.text|urlize|safe }}
-            </div>
-        {% elif bookmarkOf.content %}
-            <div class="e-content">
-                {{ bookmarkOf.content|urlize|safe }}
-            </div>
-        {% endif %}
-    </p>
-{% elif bookmarkOf %}
-    <p class="h-cite u-bookmark-of">
-        {{ render_base_content(post) }}
-        Bookmarked <a class="u-url" href="{{ bookmarkOf }}">{{ bookmarkOf }}</a>
-    </p>
-{% elif inReplyTo.type %}
-    {{ render_base_content(post) }}
-    <p class="h-cite u-in-reply-to">
-        Replied to <a class="u-url" href="{{ inReplyTo.url }}">{{ inReplyTo.name }}</a>
-        {% if inReplyTo.published %}
-            published <time class="dt-published" datetime="{{ inReplyTo.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ inReplyTo.published|date }}</time>
-        {% endif %}
-        {% if inReplyTo.content.html %}
-            <div class="e-content">
-                {{ inReplyTo.content.html|safe }}
-            </div>
-        {% elif inReplyTo.content.text %}
-            <div class="e-content">
-                {{ inReplyTo.content.text|urlize|safe }}
-            </div>
-        {% elif inReplyTo.content %}
-            <div class="e-content">
-                {{ inReplyTo.content|urlize|safe }}
-            </div>
-        {% endif %}
-    </p>
-{% elif inReplyTo %}
-    <p class="h-cite u-in-reply-to">
-        {{ render_base_content(post) }}
-        Replied to <a class="u-url" href="{{ inReplyTo }}">{{ inReplyTo }}</a>
-    </p>
-{% elif likeOf.type %}
-    <p class="h-cite u-like-of">
-        Liked <a class="u-url" href="{{ likeOf.url }}">{{ likeOf.name }}</a>
-        {% if likeOf.published %}
-            published <time class="dt-published" datetime="{{ likeOf.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ likeOf.published|date }}</time>
-        {% endif %}
-        {% if likeOf.content.html %}
-            <div class="e-content">
-                {{ likeOf.content.html|safe }}
-            </div>
-        {% elif likeOf.content.text %}
-            <div class="e-content">
-                {{ likeOf.content.text|urlize|safe }}
-            </div>
-        {% elif likeOf.content %}
-            <div class="e-content">
-                {{ likeOf.content|urlize|safe }}
-            </div>
-        {% endif %}
-    </p>
-{% elif likeOf %}
-    <p class="h-cite u-like-of">
-        Liked <a class="u-like-of" href="{{ likeOf }}" target="_blank" rel="noopener noreferrer">{{ likeOf }}</a>
-    </p>
-{% elif repostOf.type %}
-    {{ render_base_content(post) }}
-    <p class="h-cite u-repost-of">
-        Reposted <a class="u-url" href="{{ repostOf.url }}">{{ repostOf.name }}</a>
-        {% if repostOf.published %}
-            published <time class="dt-published" datetime="{{ repostOf.published|date('YYYY-MM-DDTHH:mm:ssZ') }}">{{ repostOf.published|date }}</time>
-        {% endif %}
-        {% if repostOf.content.html %}
-            <div class="e-content">
-                {{ repostOf.content.html|safe }}
-            </div>
-        {% elif repostOf.content.text %}
-            <div class="e-content">
-                {{ repostOf.content.text|urlize|safe }}
-            </div>
-        {% elif repostOf.content %}
-            <div class="e-content">
-                {{ repostOf.content|urlize|safe }}
-            </div>
-        {% endif %}
-    </p>
-{% elif repostOf %}
-    <p class="h-cite u-repost-of">
-        {{ render_base_content(post) }}
-        Reposted <a class="u-url" href="{{ repostOf }}">{{ repostOf }}</a>
-    </p>
-{% elif post.data['audio'] %}
+{{ handle_render_cite(post, 'bookmark-of', 'bookmark') }}
+{{ handle_render_cite(post, 'in-reply-to', 'edit-3') }}
+{{ handle_render_cite(post, 'like-of', 'heart') }}
+{{ handle_render_cite(post, 'repost-of', 'repeat') }}
+
+{% if post.data['audio'] %}
     <p>
         <audio class="u-audio" controls width="100%">
             {% for source in post.data['audio'] %}

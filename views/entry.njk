@@ -16,10 +16,12 @@
         </aside>
 
         <main>
-            <div class="author u-author h-card">
-                <a class="u-url" href="{{ author.url }}" title="{{ author.name }}">
-                    <img class="u-photo p-name" alt="{{ author.name }}" src="{{ author.photo }}" width="32" height="32">
-                </a>
+            <div class="icons">
+                <div class="u-author h-card">
+                    <a class="u-url" href="{{ author.url }}" title="{{ author.name }}">
+                        <img class="u-photo p-name" alt="{{ author.name }}" src="{{ author.photo }}" width="32" height="32">
+                    </a>
+                </div>
             </div>
 
             {% if file.data.name %}
